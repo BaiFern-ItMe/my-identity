@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang=""th">
+<head>
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset=""utf-8">
+    <title>The Identity of Saranporn</title>
+    <style>
+        html {
+    scroll-behavior: smooth; /* ทำให้หน้าเว็บเลื่อนลงแบบนุ่มนวล */
+}
+        body { 
+    font-family: sans-serif; 
+    margin: 0; 
+    background-color: #0d3b66; /* สีพื้นหลังหลัก */
+}
+.navbar {
+    position: sticky; /* ทำให้เมนูค้างไว้ที่ด้านบน */
+    top: 0;
+}
+        .navbar {
+    background-color: #0d3b66; /* สีพื้นหลังเมนู */
+    display: flex;
+    justify-content: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee; /* เพิ่มเส้นคั่นบางๆ แทนเพื่อให้เห็นขอบเมนู */
+}
+        .navbar a {
+    color: #faf0ce; /* เปลี่ยนสีตัวอักษรเมนูเป็นสีเข้มเพื่อให้มองเห็นบนพื้นขาว */
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+        .card {
+    scroll-margin-top: 60px; /* ปรับตัวเลขนี้ให้เท่ากับ หรือมากกว่าความสูงของแถบเมนูของคุณ */
+    background: transparent; /* หรือเปลี่ยนเป็น transparent ถ้าไม่อยากเห็นขอบ card */
+    padding: 30px;
+    width: 600px auto;
+    margin: 5px auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: 0.3s; /* ทำให้การเปลี่ยนแปลงดูนุ่มนวล */
+    transition: 0.3s; /* ทำให้การเปลี่ยนแปลงดูนุ่มนวล */
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1);
+    /* ถ้าอยากให้เรียบไปหมด ให้ลบ box-shadow ออก */
+}
+.card:hover {
+    transform: translateY(-5px); /* ขยับการ์ดขึ้นข้างบน 5px */
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ดูสูงขึ้น */
+}
+        .card-content {
+            flex: 1; /* กินพื้นที่ฝั่งซ้าย */
+            padding-right: 20px;
+        }
+        .profile-img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            
+            /* -- เปลี่ยนตรงนี้ให้เป็นเหลี่ยม -- */
+            border-radius: 10px; /* เหลี่ยมโค้งนิดหน่อย */
+            
+            border: 3px solid #eee;
+        } 
+        /* ปรับขนาดหัวข้อ (H1) */
+h1 {
+    font-size: 32px;    /* ปรับตัวเลขตามใจชอบ ยิ่งมากยิ่งใหญ่ */
+    color: #e1dad8;
+    margin: 0 0 5px 0; /* บน0 ขวา0 ล่าง5px ซ้าย0 */
+}
+
+/* ปรับขนาดข้อความทั่วไป (P) */
+p {
+    font-size: 18px;    /* ขนาดมาตรฐานส่วนใหญ่อยู่ที่ 16px - 20px */
+    line-height: 1.4;   /* แถม: ช่วยเพิ่มระยะห่างระหว่างบรรทัด ทำให้อ่านง่ายขึ้น */
+    color: #e1dad8;
+}
+
+/* ปรับขนาดตัวอักษรในแถบเมนู */
+.navbar a {
+    font-size: 14px;    /* เมนูอาจจะใช้ตัวเล็กกว่าเนื้อหาหน่อย */
+    color: #e1dad8;
+    text-decoration: none;
+    padding: 10px 20px;
+}
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+    <a href="#Home">Home</a>
+    <a href="#Working Experience">Working Experience</a>
+    <a href="#Working Certificate">Working Certificate</a>
+    <a href="#Skills">Skills</a>
+    <a href="#Education">Education</a>
+    <a href="#Activities">Activities</a>
+    <a href="#Contact">Contact</a>
+</nav>
+    <div id="Home" class="card">
+        <div class="card-content">
+        <h1>SARANPORN PHOOKOSOT</h1>
+        <p style="font-size: 20px; font-weight: bold;">QMS & DCC Supervisor</p>
+        <p>Empowering organization through precise document control and process-driven quality management system.</p>
+        </div>
+        <img src="Profile Pic.jpg" alt="รูปของฉัน" class="profile-img">
+    </div>
+    <div id="Working Experience" class="card">
+        <div class="card-content">
+        <h1>Working Experience</h1>
+        <p style="font-size: 20px; font-weight: bold;">2021-Present MHI Automotive Climate Control (Thailand) Co., Ltd.</p>
+        <p>xxxxxxxxxxxxxxxxxxxxx</p>
+        </div>
+    </div>
+    <div id="Working Certificate" class="card">
+        <div class="card-content">
+        <h1>Working Certificate</h1>
+        <p>xxxxxxxxxxxxxxxxxxxxx</p>
+        </div>
+    </div>
+    <div id="Skills" class="card">
+        <div class="card-content">
+        <h1>Skills</h1>
+        <p>xxxxxxxxxxxxxxxxxxxxx</p>
+        </div>
+    </div>
+    <div id="Education" class="card">
+        <div class="card-content">
+        <h1>Education</h1>
+        <p style="font-size: 20px; font-weight: bold;">2016-2020 Srinakharinwirot University</p>
+        <p>B.A.Information Studies</p>
+        <p style="font-size: 20px; font-weight: bold;">2010-2016 Datdaruni School</p>
+        <p>Intensive English Program (Science - Mathematics)</p>
+        </div>
+    </div>
+    <div id="Activities" class="card">
+        <div class="card-content">
+        <h1>Activities</h1>
+        <p style="font-size: 20px; font-weight: bold;">Learning</p>
+        <p>xxxxxxxxxxxxxxxxxxxxx</p>
+        <p style="font-size: 20px; font-weight: bold;">Sport</p>
+        <p>xxxxxxxxxxxxxxxxxxxxx</p>
+        </div>
+    </div>
+    <div id="Contact" class="card">
+        <div class="card-content">
+        <h1>Contact</h1>
+        <p>Phone: +66 86 828 5027</p>
+        <p>Email: saranporn.phookosot@gmail.com</p>
+        <p>Address: 18/99 Moo 1, Sothon, Mueang Chachoengsao, Chachoengsao, Thailand, 24000</p>
+        </div>
+    </div>
+</body>
+</html>
