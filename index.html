@@ -4,6 +4,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta charset=""utf-8">
     <title>The Identity of Saranporn</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         html {
     scroll-behavior: smooth; /* ทำให้หน้าเว็บเลื่อนลงแบบนุ่มนวล */
@@ -83,6 +84,66 @@ p {
     text-decoration: none;
     padding: 10px 20px;
 }
+/* เมนูเลือกหัวข้อ (จะเห็นเฉพาะบนเว็บ ไม่ติดไปใน PDF) */
+.cv-controls {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 600px;
+    border: 1px solid #ddd;
+    text-align: center; /* ใช้ความรู้เรื่องจัดกึ่งกลางที่เรียนไปมาใช้ที่นี่ */
+}
+
+/* ปุ่มดาวน์โหลดให้ดูเด่น */
+.download-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* ตกแต่งปุ่มบนเมนู */
+.nav-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* กล่องรายการเลือกหัวข้อ */
+.dropdown-content {
+    position: absolute;
+    right: 0;
+    background-color: white;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    padding: 15px;
+    z-index: 1000;
+    border-radius: 8px;
+    text-align: left;
+    color: #333;
+}
+
+.confirm-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* คลาสสำหรับซ่อน/แสดง */
+.hidden { display: none; }
     </style>
 </head>
 <body>
@@ -94,7 +155,32 @@ p {
     <a href="#Education">Education</a>
     <a href="#Activities">Activities</a>
     <a href="#Contact">Contact</a>
-</nav>
+
+    <li class="download-item" style="list-style: none; display: inline-block; position: relative;">
+    <button class="nav-btn" onclick="toggleDownloadMenu()">Download CV</button>
+    
+    <div id="download-options" class="dropdown-content hidden" style="position: absolute; background: white; padding: 15px; border: 1px solid #ccc; z-index: 100;">
+        <p style="color: black; font-weight: bold; margin-top: 0;">Select:</p>
+        
+        <label style="color: black;"><input type="checkbox" id="check-Home" checked> Home</label><br>
+        <label style="color: black;"><input type="checkbox" id="check-Working Experience" checked> Working Experience</label><br>
+        <label style="color: black;"><input type="checkbox" id="check-Working Certificate" checked> Working Certificate</label><br>
+        <label style="color: black;"><input type="checkbox" id="check-Skills" checked> Skills</label><br>
+        <label style="color: black;"><input type="checkbox" id="check-Education" checked> Education</label><br>
+        <label style="color: black;"><input type="checkbox" id="check-Activities" checked> Activities</label><br>
+        <label style="color: black;"><input type="checkbox" id="check-Contact" checked> Contact</label><br>
+        
+        <hr>
+        <button class="confirm-btn" onclick="prepareAndDownload()" style="width: 100%; cursor: pointer;">Download Now</button>
+    </div>
+    </li>
+    </nav>
+
+<!-- [ระดับที่ 2] เพิ่ม <div id="cv-content"> มาคลุม Card ทั้งหมดที่จะเอาลง PDF -->
+<div id="cv-content">
+
+    <!-- [ระดับที่ 3] เพิ่ม <div id="sec-..."> มาคลุม Card แต่ละใบ เพื่อให้เปิด-ปิดได้ -->
+    <div id="content-Home">
     <div id="Home" class="card">
         <div class="card-content">
         <h1 style="text-align: center; font-size: 60px">SARANPORN PHOOKOSOT</h1>
@@ -104,6 +190,9 @@ p {
         </div>
         <img src="Profile Pic.jpg" alt="รูปของฉัน" class="profile-img">
     </div>
+    </div>
+
+    <div id="content-Working Experience">
     <div id="Working Experience" class="card">
         <div class="card-content">
         <h1>Working Experience</h1>
@@ -112,6 +201,9 @@ p {
         <p style="text-indent: 40px;">***COMING SOON***</p>
         </div>
     </div>
+    </div>
+    
+    <div id="content-Working Certificate">
     <div id="Working Certificate" class="card">
         <div class="card-content">
         <h1>Working Certificate</h1>
@@ -128,12 +220,18 @@ p {
         <p style="text-indent: 25px;">***COMING SOON***</p>
         </div>
     </div>
+    </div>
+    
+    <div id="content-Skills">
     <div id="Skills" class="card">
         <div class="card-content">
         <h1>Skills</h1>
         <p style="text-indent: 25px;">***COMING SOON***</p>
         </div>
     </div>
+    </div>
+    
+    <div id="content-Education">
     <div id="Education" class="card">
         <div class="card-content">
         <h1>Education</h1>
@@ -143,6 +241,9 @@ p {
         <p style="text-indent: 40px;">Intensive English Program (Science - Mathematics)</p>
         </div>
     </div>
+    </div>
+    
+    <div id="content-Activities">
     <div id="Activities" class="card">
         <div class="card-content">
         <h1>Activities</h1>
@@ -160,12 +261,68 @@ p {
         <p style="text-indent: 50px;">FUN SWIM 1 KM (Open Water Swimming 0:48:55)</p>
         </div>
     </div>
+    </div>
+    
+    <div id="content-Contact">
     <div id="Contact" class="card">
         <div class="card-content">
         <h1>Contact</h1>
         <p style="text-indent: 25px;">Email: saranporn.phookosot@gmail.com</p>
-        <p style="text-indent: 25px;">Address: Sothon, Mueang Chachoengsao, Chachoengsao, Thailand, 24000</p>
+        <p style="text-indent: 25px;">Line ID: srplis</p>
+        <p style="text-indent: 25px;">Phone: +66 86 828 5027</p>
+        <p style="text-indent: 25px;">Address: 18/99 Moo1 Sothon, Mueang Chachoengsao, Chachoengsao, Thailand, 24000</p>
         </div>
     </div>
+    </div>
+</div>
+
+    <script>
+    // เปิด-ปิดเมนูเลือก
+    function toggleDownloadMenu() {
+        document.getElementById('download-options').classList.toggle('hidden');
+    }
+
+    // ฟังก์ชันจัดการเนื้อหาและดาวน์โหลด
+    function prepareAndDownload() {
+        // เช็ก Checkbox แต่ละอัน
+        const showHome = document.getElementById('check-Home').checked;
+        const showWorkingExperience = document.getElementById('check-WorkingExperience').checked;
+        const showWorkingCertificate = document.getElementById('check-WorkingCertificate').checked;
+        const showSkills = document.getElementById('check-Skills').checked;
+        const showEducation = document.getElementById('check-Education').checked;
+        const showActivities = document.getElementById('check-Activities').checked;
+        const showContact = document.getElementById('check-Contact').checked;
+
+        // สั่งซ่อน/แสดงตามที่ติ๊ก
+        document.getElementById('content-Home').style.display = showHome ? 'block' : 'none';
+        document.getElementById('content-Working Experience').style.display = showWorkingExperience ? 'block' : 'none';
+        document.getElementById('content-Working Certificate').style.display = showWorkingCertificate ? 'block' : 'none';
+        document.getElementById('content-Skills').style.display = showSkills ? 'block' : 'none';
+        document.getElementById('content-Education').style.display = showEducation ? 'block' : 'none';
+        document.getElementById('content-Activities').style.display = showActivities ? 'block' : 'none';
+        document.getElementById('content-Contact').style.display = showContact ? 'block' : 'none';
+
+        // เริ่มดาวน์โหลด
+        const element = document.getElementById('cv-content');
+        const opt = {
+            margin: 10,
+            filename: 'My_CV.pdf',
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            // เมื่อโหลดเสร็จ ให้แสดงทุกอย่างกลับมาเหมือนเดิมบนหน้าเว็บ
+            document.getElementById('content-Home').style.display = 'block';
+            document.getElementById('content-WorkingExperience').style.display = 'block';
+            document.getElementById('content-WorkingCertificate').style.display = 'block';
+            document.getElementById('content-Skills').style.display = 'block';
+            document.getElementById('content-Education').style.display = 'block';
+            document.getElementById('content-Activities').style.display = 'block';
+            document.getElementById('content-Contact').style.display = 'block';
+            toggleDownloadMenu(); // ปิดเมนูเลือก
+        });
+    }
+</script>
 </body>
 </html>
