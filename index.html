@@ -145,27 +145,30 @@ p {
 /* คลาสสำหรับซ่อน/แสดง */
 .hidden { display: none; }
 
-/* คลาสพิเศษที่จะถูกใส่เข้าไปเฉพาะตอนสร้าง PDF */
+/* บังคับหน้าตาสำหรับ PDF เท่านั้น */
 .pdf-mode {
-    background-color: white !important; /* พื้นหลังขาวสะอาด */
-    color: black !important;           /* ตัวอักษรดำเข้ม */
+    background: white !important;
+    color: black !important;
+    width: 794px !important; /* บังคับความกว้างให้เท่ากับขนาด A4 (96 DPI) */
+    margin: 0 auto !important;
+    padding: 20px !important;
 }
 
 .pdf-mode .card {
-    border: 1px solid #eee !important;  /* เพิ่มเส้นขอบจางๆ ให้ดูเป็นระเบียบ */
-    box-shadow: none !important;        /* ลบเงาที่อาจจะดูเลอะตอนพิมพ์ */
-    margin-bottom: 5px !important;      /* ลดระยะห่างระหว่าง Card */
-    padding: 10px !important;           /* ลด Padding ให้เนื้อหากระชับ */
-    width: 100% !important;             /* บังคับความกว้างให้พอดีกระดาษ */
+    background: white !important;
+    color: black !important;
+    border: 1px solid #ccc !important; /* เพิ่มเส้นขอบให้ดูเป็นเอกสาร */
+    box-shadow: none !important;
+    margin-bottom: 10px !important;
+    page-break-inside: avoid; /* ป้องกันเนื้อหาขาดกลางหน้ากระดาษ */
 }
 
-/* ปรับขนาดตัวอักษรใน PDF ให้เล็กลงเหมือนเอกสารจริง */
-.pdf-mode h1 { font-size: 18pt !important; margin-bottom: 10px; }
-.pdf-mode h2 { font-size: 14pt !important; margin-bottom: 8px; border-bottom: 1px solid #333; }
-.pdf-mode p, .pdf-mode li { font-size: 10pt !important; line-height: 1.4; }
-
-/* ซ่อนส่วนที่ไม่ต้องการให้เห็นใน PDF (ถ้ามี) */
-.pdf-mode .no-print { display: none !important; }
+/* ปรับขนาดตัวอักษรให้เล็กลงเหมือนเอกสารทางการ */
+.pdf-mode h1, .pdf-mode h2, .pdf-mode h3 { color: black !important; }
+.pdf-mode p, .pdf-mode span, .pdf-mode li { 
+    font-size: 12pt !important; 
+    color: #333 !important;
+}
 
     </style>
 </head>
@@ -300,85 +303,72 @@ p {
 </div>
 
     <script>
-    // เปิด-ปิดเมนูเลือก JAVASCRIP
+    // 1. เปิด-ปิดเมนูเลือก
     function toggleDownloadMenu() {
-        document.getElementById('download-options').classList.toggle('hidden');
+        const menu = document.getElementById('download-options');
+        if (menu) menu.classList.toggle('hidden');
     }
 
-    // ฟังก์ชันจัดการเนื้อหาและดาวน์โหลด
-    function prepareAndDownload() {
-        // เช็ก Checkbox แต่ละอัน
-        const showHome = document.getElementById('check-Home').checked;
-        const showWorkingExperience = document.getElementById('check-WorkingExperience').checked;
-        const showWorkingCertificate = document.getElementById('check-WorkingCertificate').checked;
-        const showSkills = document.getElementById('check-Skills').checked;
-        const showEducation = document.getElementById('check-Education').checked;
-        const showActivities = document.getElementById('check-Activities').checked;
-        const showContact = document.getElementById('check-Contact').checked;
-
-        // สั่งซ่อน/แสดงตามที่ติ๊ก
-        document.getElementById('content-Home').style.display = showHome ? 'block' : 'none';
-        document.getElementById('content-WorkingExperience').style.display = showWorkingExperience ? 'block' : 'none';
-        document.getElementById('content-WorkingCertificate').style.display = showWorkingCertificate ? 'block' : 'none';
-        document.getElementById('content-Skills').style.display = showSkills ? 'block' : 'none';
-        document.getElementById('content-Education').style.display = showEducation ? 'block' : 'none';
-        document.getElementById('content-Activities').style.display = showActivities ? 'block' : 'none';
-        document.getElementById('content-Contact').style.display = showContact ? 'block' : 'none';
-
-        // เริ่มดาวน์โหลด
+    // 2. ฟังก์ชันจัดการเนื้อหา ปรับสไตล์ และดาวน์โหลด
+    async function prepareAndDownload() {
         const element = document.getElementById('cv-content');
+        if (!element) {
+            alert("ไม่พบเนื้อหา id='cv-content'");
+            return;
+        }
+
+        // --- ส่วนที่ 1: ตรวจสอบและซ่อน/แสดงตาม Checkbox ---
+        const sections = [
+            { check: 'check-Home', content: 'content-Home' },
+            { check: 'check-WorkingExperience', content: 'content-WorkingExperience' },
+            { check: 'check-WorkingCertificate', content: 'content-WorkingCertificate' },
+            { check: 'check-Skills', content: 'content-Skills' },
+            { check: 'check-Education', content: 'content-Education' },
+            { check: 'check-Activities', content: 'content-Activities' },
+            { check: 'check-Contact', content: 'content-Contact' }
+        ];
+
+        sections.forEach(item => {
+            const cb = document.getElementById(item.check);
+            const ct = document.getElementById(item.content);
+            if (cb && ct) {
+                ct.style.display = cb.checked ? 'block' : 'none';
+            }
+        });
+
+        // --- ส่วนที่ 2: ปรับโหมดเป็น PDF (ขาวดำ/ขนาดเล็กลง) ---
+        element.classList.add('pdf-mode');
+
+        // --- ส่วนที่ 3: ตั้งค่าการดาวน์โหลด ---
         const opt = {
-            margin: 10,
-            filename: 'My_CV.pdf',
-            html2canvas: { scale: 2, useCORS: true },
+            margin: [10, 10, 10, 10],
+            filename: 'Professional_CV.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true, 
+                letterRendering: true,
+                backgroundColor: '#ffffff' // บังคับพื้นหลังขาว
+            },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
-        html2pdf().set(opt).from(element).save().then(() => {
-            // เมื่อโหลดเสร็จ ให้แสดงทุกอย่างกลับมาเหมือนเดิมบนหน้าเว็บ
-            document.getElementById('content-Home').style.display = 'block';
-            document.getElementById('content-WorkingExperience').style.display = 'block';
-            document.getElementById('content-WorkingCertificate').style.display = 'block';
-            document.getElementById('content-Skills').style.display = 'block';
-            document.getElementById('content-Education').style.display = 'block';
-            document.getElementById('content-Activities').style.display = 'block';
-            document.getElementById('content-Contact').style.display = 'block';
+        try {
+            console.log("กำลังสร้าง PDF...");
+            // สั่งสร้าง PDF และรอจนกว่าจะเสร็จ (await)
+            await html2pdf().set(opt).from(element).save();
+        } catch (e) {
+            console.error("เกิดข้อผิดพลาด:", e);
+            alert("ดาวน์โหลดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+        } finally {
+            // --- ส่วนที่ 4: คืนค่าทุกอย่างกลับเป็นปกติบนหน้าเว็บ ---
+            element.classList.remove('pdf-mode'); // คืนสีหน้าเว็บ
+            sections.forEach(item => {
+                const ct = document.getElementById(item.content);
+                if (ct) ct.style.display = 'block'; // แสดงทุกหัวข้อกลับมา
+            });
             toggleDownloadMenu(); // ปิดเมนูเลือก
-        });
-
-    async function prepareAndDownload() {
-    const element = document.getElementById('cv-content');
-    if (!element) return;
-
-    // 1. >>> เพิ่มบรรทัดนี้: ใส่คลาส pdf-mode เพื่อเปลี่ยนสไตล์เป็นแบบเอกสาร
-    element.classList.add('pdf-mode');
-
-    const opt = {
-        margin: [10, 10, 10, 10], // ระยะขอบกระดาษ (มิลลิเมตร)
-        filename: 'Professional_CV.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { 
-            scale: 2,         // ความชัด (2 กำลังดี ถ้า 3-4 ไฟล์จะใหญ่มาก)
-            useCORS: true, 
-            letterRendering: true 
-        },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    try {
-        // เริ่มกระบวนการสร้าง PDF
-        await html2pdf().set(opt).from(element).save();
-    } catch (e) {
-        console.error(e);
-    } finally {
-        // 2. >>> เพิ่มบรรทัดนี้: เอาคลาส pdf-mode ออก เพื่อให้หน้าเว็บกลับมาสวยเหมือนเดิม
-        element.classList.remove('pdf-mode');
-        
-        // คืนค่า display ให้ Card ต่างๆ (โค้ดเดิมของคุณ)
-        toggleDownloadMenu(); 
-    }
-}
-    
+        }
     }
 </script>
 </body>
