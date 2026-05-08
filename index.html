@@ -144,6 +144,29 @@ p {
 
 /* คลาสสำหรับซ่อน/แสดง */
 .hidden { display: none; }
+
+/* คลาสพิเศษที่จะถูกใส่เข้าไปเฉพาะตอนสร้าง PDF */
+.pdf-mode {
+    background-color: white !important; /* พื้นหลังขาวสะอาด */
+    color: black !important;           /* ตัวอักษรดำเข้ม */
+}
+
+.pdf-mode .card {
+    border: 1px solid #eee !important;  /* เพิ่มเส้นขอบจางๆ ให้ดูเป็นระเบียบ */
+    box-shadow: none !important;        /* ลบเงาที่อาจจะดูเลอะตอนพิมพ์ */
+    margin-bottom: 5px !important;      /* ลดระยะห่างระหว่าง Card */
+    padding: 10px !important;           /* ลด Padding ให้เนื้อหากระชับ */
+    width: 100% !important;             /* บังคับความกว้างให้พอดีกระดาษ */
+}
+
+/* ปรับขนาดตัวอักษรใน PDF ให้เล็กลงเหมือนเอกสารจริง */
+.pdf-mode h1 { font-size: 18pt !important; margin-bottom: 10px; }
+.pdf-mode h2 { font-size: 14pt !important; margin-bottom: 8px; border-bottom: 1px solid #333; }
+.pdf-mode p, .pdf-mode li { font-size: 10pt !important; line-height: 1.4; }
+
+/* ซ่อนส่วนที่ไม่ต้องการให้เห็นใน PDF (ถ้ามี) */
+.pdf-mode .no-print { display: none !important; }
+
     </style>
 </head>
 <body>
@@ -277,7 +300,7 @@ p {
 </div>
 
     <script>
-    // เปิด-ปิดเมนูเลือก
+    // เปิด-ปิดเมนูเลือก JAVASCRIP
     function toggleDownloadMenu() {
         document.getElementById('download-options').classList.toggle('hidden');
     }
@@ -322,6 +345,40 @@ p {
             document.getElementById('content-Contact').style.display = 'block';
             toggleDownloadMenu(); // ปิดเมนูเลือก
         });
+
+    async function prepareAndDownload() {
+    const element = document.getElementById('cv-content');
+    if (!element) return;
+
+    // 1. >>> เพิ่มบรรทัดนี้: ใส่คลาส pdf-mode เพื่อเปลี่ยนสไตล์เป็นแบบเอกสาร
+    element.classList.add('pdf-mode');
+
+    const opt = {
+        margin: [10, 10, 10, 10], // ระยะขอบกระดาษ (มิลลิเมตร)
+        filename: 'Professional_CV.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+            scale: 2,         // ความชัด (2 กำลังดี ถ้า 3-4 ไฟล์จะใหญ่มาก)
+            useCORS: true, 
+            letterRendering: true 
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    try {
+        // เริ่มกระบวนการสร้าง PDF
+        await html2pdf().set(opt).from(element).save();
+    } catch (e) {
+        console.error(e);
+    } finally {
+        // 2. >>> เพิ่มบรรทัดนี้: เอาคลาส pdf-mode ออก เพื่อให้หน้าเว็บกลับมาสวยเหมือนเดิม
+        element.classList.remove('pdf-mode');
+        
+        // คืนค่า display ให้ Card ต่างๆ (โค้ดเดิมของคุณ)
+        toggleDownloadMenu(); 
+    }
+}
+    
     }
 </script>
 </body>
