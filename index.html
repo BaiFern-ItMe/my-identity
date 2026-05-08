@@ -146,59 +146,40 @@ p {
 .hidden { display: none; }
 
 /* สไตล์สำหรับตอนเป็น PDF เท่านั้น */
+/* CSS สำหรับโหมด PDF ที่เน้นความยืดหยุ่น */
 .pdf-mode {
-    background: white !important;
+    background-color: white !important;
     color: black !important;
-    width: 800px !important; /* บังคับขนาดให้พอดีหน้ากระดาษ */
     padding: 0 !important;
     margin: 0 !important;
-}
-
-/* ลบกรอบและเงาของ Card */
-.pdf-mode .card {
-    background: white !important;
-    border: none !important;      /* ลบเส้นขอบออก */
-    box-shadow: none !important;  /* ลบเงาที่ดูเหมือนกรอบออก */
-    margin: 0 !important;
-    padding: 10px 0 !important;   /* ปรับระยะห่างให้ดูเป็นระเบียบ */
-}
-
-/* ปรับขนาดตัวอักษรให้เล็กลง */
-.pdf-mode h1 { font-size: 20pt !important; color: black !important; }
-.pdf-mode h2 { font-size: 16pt !important; color: black !important; border-bottom: 1px solid #ccc; }
-.pdf-mode p, .pdf-mode li, .pdf-mode span { 
-    font-size: 11pt !important; 
-    color: #333 !important;
-    line-height: 1.5 !important;
-}
-
-/* สไตล์สำหรับปรับปรุงหน้ากระดาษ PDF */
-.pdf-mode {
-    width: 210mm !important; /* บังคับความกว้างเท่า A4 */
-    max-width: 210mm !important;
-    background: white !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    /* ลดขนาดภาพรวมลง 80% เพื่อให้มีที่ว่างในกระดาษมากขึ้น */
+    zoom: 0.8; 
 }
 
 .pdf-mode .card {
-    width: 100% !important;
-    box-sizing: border-box !important;
-    page-break-inside: avoid; /* สำคัญ: ป้องกันการตัดแบ่งก้อนเนื้อหาขาดครึ่งหน้า */
-    word-wrap: break-word !important; /* บังคับตัดคำถ้าข้อความยาวเกิน */
-    overflow-wrap: break-word !important;
+    background: white !important;
     border: none !important;
     box-shadow: none !important;
-    margin-bottom: 15px !important;
+    margin-bottom: 8px !important;
+    padding: 5px 0 !important;
+    page-break-inside: avoid; /* ป้องกันเนื้อหาขาดกลางก้อน */
+    width: 100% !important;
+    display: block !important; /* บังคับให้เรียงต่อกันแนวตั้ง */
 }
 
-/* ปรับขนาดตัวอักษรให้มาตรฐานเอกสาร (11pt - 12pt) */
-.pdf-mode h1 { font-size: 22pt !important; text-align: center; }
-.pdf-mode h2 { font-size: 16pt !important; border-bottom: 2px solid #333; padding-bottom: 5px; }
+/* แก้ปัญหาตัวอักษรใหญ่เกินจนล้น */
+.pdf-mode h1 { font-size: 18pt !important; margin: 10px 0 !important; }
+.pdf-mode h2 { font-size: 14pt !important; border-bottom: 1px solid #333 !important; }
 .pdf-mode p, .pdf-mode li, .pdf-mode span { 
-    font-size: 11pt !important; /* ขนาดมาตรฐานอ่านง่ายบนกระดาษ */
-    line-height: 1.5 !important; 
-    text-align: justify; /* จัดเนื้อหาให้เต็มบรรทัดสวยงาม */
+    font-size: 10pt !important; 
+    line-height: 1.3 !important;
+    word-break: break-word !important; /* บังคับตัดคำถ้าชื่อหัวข้อยาวเกิน */
+}
+
+/* ปรับขนาดรูปโปรไฟล์ไม่ให้ใหญ่เกินหน้ากระดาษ */
+.pdf-mode img {
+    max-width: 150px !important; 
+    height: auto !important;
 }
 
     </style>
@@ -334,7 +315,7 @@ p {
 </div>
 
     <script>
-    // 1. ฟังก์ชันเปิด-ปิดเมนู Dropdown
+    // 1. ฟังก์ชันเปิด-ปิดเมนูตัวเลือกดาวน์โหลด
     function toggleDownloadMenu() {
         const menu = document.getElementById('download-options');
         if (menu) {
@@ -342,16 +323,16 @@ p {
         }
     }
 
-    // 2. ฟังก์ชันหลักสำหรับเตรียมเนื้อหาและสร้าง PDF
+    // 2. ฟังก์ชันหลักในการจัดการเนื้อหาและสร้าง PDF
     async function prepareAndDownload() {
         const element = document.getElementById('cv-content');
+        
         if (!element) {
-            alert("ไม่พบเนื้อหาที่ต้องการดาวน์โหลด (หา id='cv-content' ไม่เจอ)");
+            alert("ไม่พบเนื้อหา id='cv-content' กรุณาตรวจสอบว่ามี id นี้ครอบเนื้อหาทั้งหมดหรือยัง");
             return;
         }
 
-        // --- ส่วนที่ 1: ตรวจสอบ Checkbox และ ซ่อน/แสดงเนื้อหา ---
-        // ** สำคัญ: ตรวจสอบให้แน่ใจว่า ID ใน HTML ของคุณไม่มีช่องว่าง **
+        // รายการ ID ของ Checkbox และ Content (ตรวจสอบให้แน่ใจว่าใน HTML สะกดตรงกันและไม่มีช่องว่าง)
         const sections = [
             { check: 'check-Home', content: 'content-Home' },
             { check: 'check-WorkingExperience', content: 'content-WorkingExperience' },
@@ -362,48 +343,52 @@ p {
             { check: 'check-Contact', content: 'content-Contact' }
         ];
 
+        // --- ส่วนที่ 1: ซ่อน/แสดงเนื้อหาตามที่ติ๊ก ---
         sections.forEach(item => {
             const cb = document.getElementById(item.check);
             const ct = document.getElementById(item.content);
             if (cb && ct) {
                 ct.style.display = cb.checked ? 'block' : 'none';
+            } else {
+                console.warn(`ระบบหา ID ไม่เจอ: ${item.check} หรือ ${item.content}`);
             }
         });
 
-        // --- ส่วนที่ 2: เปิดโหมด PDF (เปลี่ยนสี/ย่อขนาดผ่าน CSS) ---
+        // --- ส่วนที่ 2: เปิดโหมด PDF (เปลี่ยนเป็นขาวดำและย่อขนาด) ---
         element.classList.add('pdf-mode');
 
         // --- ส่วนที่ 3: ตั้งค่า Library html2pdf ---
         const opt = {
-            margin: [15, 10, 15, 10], // ระยะขอบกระดาษ: บน, ซ้าย, ล่าง, ขวา (มม.)
+            margin: [10, 10, 10, 10], // ระยะขอบ บน, ซ้าย, ล่าง, ขวา (มม.)
             filename: 'Saranporn_CV.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { 
                 scale: 2,             // ความชัด
-                useCORS: true,        // รองรับรูปภาพข้ามโดเมน
+                useCORS: true,        // อนุญาตให้โหลดรูปภาพ
                 letterRendering: true,
-                width: 794,           // บังคับความกว้าง Canvas (A4 ที่ 96 DPI)
-                windowWidth: 794      // บังคับให้เบราว์เซอร์จัดบรรทัดใหม่ในความกว้าง 794px
+                scrollY: 0,           // ป้องกันเนื้อหาเลื่อน
+                backgroundColor: '#ffffff' // บังคับพื้นหลังขาว
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
-        // --- ส่วนที่ 4: เริ่มกระบวนการสร้างไฟล์ ---
+        // --- ส่วนที่ 4: เริ่มกระบวนการดาวน์โหลด ---
         try {
-            console.log("กำลังจัดรูปแบบและสร้าง PDF...");
+            console.log("กำลังสร้างไฟล์ PDF...");
+            // ใช้ await เพื่อรอให้ library สร้างไฟล์จนเสร็จก่อนทำขั้นตอนถัดไป
             await html2pdf().set(opt).from(element).save();
-            console.log("ดาวน์โหลดสำเร็จ!");
+            console.log("ดาวน์โหลดสำเร็จ");
         } catch (error) {
-            console.error("PDF Error:", error);
-            alert("เกิดข้อผิดพลาดในการสร้างไฟล์ กรุณาลองใหม่อีกครั้ง");
+            console.error("เกิดข้อผิดพลาด:", error);
+            alert("ไม่สามารถสร้าง PDF ได้: " + error.message);
         } finally {
-            // --- ส่วนที่ 5: คืนค่าหน้าเว็บให้กลับมาเป็นปกติ ---
+            // --- ส่วนที่ 5: คืนค่าหน้าเว็บกลับมาเป็นปกติ ---
             element.classList.remove('pdf-mode');
             sections.forEach(item => {
                 const ct = document.getElementById(item.content);
                 if (ct) ct.style.display = 'block';
             });
-            toggleDownloadMenu(); // ปิดเมนูเลือก
+            toggleDownloadMenu(); // ปิดเมนูเลือกอัตโนมัติ
         }
     }
 </script>
