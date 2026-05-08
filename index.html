@@ -154,32 +154,47 @@ p {
     margin: 0 !important;
     /* ลดขนาดภาพรวมลง 80% เพื่อให้มีที่ว่างในกระดาษมากขึ้น */
     zoom: 0.8; 
+    background: white !important;
+    width: 100% !important;
+    display: block !important;
+    font-family: 'Arial', sans-serif !important;
 }
 
-.pdf-mode .card {
-    background: white !important;
+/* ยกเลิก Flex/Grid ที่ทำให้ตัวหนังสือซ้อนกัน */
+.pdf-mode * {
+    position: static !important; /* ห้ามใช้ absolute/fixed */
+    float: none !important;
+    display: block !important; /* บังคับเรียงต่อกันลงมา */
+    width: 100% !important;
+    opacity: 1 !important;     /* แก้ตัวหนังสือจาง */
+    color: black !important;   /* บังคับตัวหนังสือดำเข้ม */
+}
+
+.pdf-mode img {
+    display: block !important;
+    margin: 10px auto !important; /* จัดรูปไว้กลาง */
+    width: 120px !important;      /* คุมขนาดรูปโปรไฟล์ */
+    height: auto !important;
+}
+
+.pdf-mode h1, .pdf-mode h2 {
+    text-align: center !important;
+    margin: 15px 0 !important;
+    font-weight: bold !important;
+}
+
+.pdf-mode p, .pdf-mode span, .pdf-mode li {
+    font-size: 11pt !important;
+    line-height: 1.6 !important;
+    margin-bottom: 5px !important;
+    text-align: left !important;
+}
+
+/* ลบเงาและกรอบออกให้หมด */
+.pdf-mode .card, .pdf-mode div {
     border: none !important;
     box-shadow: none !important;
-    margin-bottom: 8px !important;
     padding: 5px 0 !important;
-    page-break-inside: avoid; /* ป้องกันเนื้อหาขาดกลางก้อน */
-    width: 100% !important;
-    display: block !important; /* บังคับให้เรียงต่อกันแนวตั้ง */
-}
-
-/* แก้ปัญหาตัวอักษรใหญ่เกินจนล้น */
-.pdf-mode h1 { font-size: 18pt !important; margin: 10px 0 !important; }
-.pdf-mode h2 { font-size: 14pt !important; border-bottom: 1px solid #333 !important; }
-.pdf-mode p, .pdf-mode li, .pdf-mode span { 
-    font-size: 10pt !important; 
-    line-height: 1.3 !important;
-    word-break: break-word !important; /* บังคับตัดคำถ้าชื่อหัวข้อยาวเกิน */
-}
-
-/* ปรับขนาดรูปโปรไฟล์ไม่ให้ใหญ่เกินหน้ากระดาษ */
-.pdf-mode img {
-    max-width: 150px !important; 
-    height: auto !important;
 }
 
     </style>
@@ -315,24 +330,19 @@ p {
 </div>
 
     <script>
-    // 1. ฟังก์ชันเปิด-ปิดเมนูตัวเลือกดาวน์โหลด
     function toggleDownloadMenu() {
         const menu = document.getElementById('download-options');
-        if (menu) {
-            menu.classList.toggle('hidden');
-        }
+        if (menu) menu.classList.toggle('hidden');
     }
 
-    // 2. ฟังก์ชันหลักในการจัดการเนื้อหาและสร้าง PDF
     async function prepareAndDownload() {
         const element = document.getElementById('cv-content');
-        
-        if (!element) {
-            alert("ไม่พบเนื้อหา id='cv-content' กรุณาตรวจสอบว่ามี id นี้ครอบเนื้อหาทั้งหมดหรือยัง");
-            return;
-        }
+        if (!element) return;
 
-        // รายการ ID ของ Checkbox และ Content (ตรวจสอบให้แน่ใจว่าใน HTML สะกดตรงกันและไม่มีช่องว่าง)
+        // 1. เข้าโหมด PDF
+        element.classList.add('pdf-mode');
+
+        // 2. จัดการการแสดงผลตาม Checkbox
         const sections = [
             { check: 'check-Home', content: 'content-Home' },
             { check: 'check-WorkingExperience', content: 'content-WorkingExperience' },
@@ -343,52 +353,38 @@ p {
             { check: 'check-Contact', content: 'content-Contact' }
         ];
 
-        // --- ส่วนที่ 1: ซ่อน/แสดงเนื้อหาตามที่ติ๊ก ---
         sections.forEach(item => {
             const cb = document.getElementById(item.check);
             const ct = document.getElementById(item.content);
-            if (cb && ct) {
-                ct.style.display = cb.checked ? 'block' : 'none';
-            } else {
-                console.warn(`ระบบหา ID ไม่เจอ: ${item.check} หรือ ${item.content}`);
-            }
+            if (cb && ct) ct.style.display = cb.checked ? 'block' : 'none';
         });
 
-        // --- ส่วนที่ 2: เปิดโหมด PDF (เปลี่ยนเป็นขาวดำและย่อขนาด) ---
-        element.classList.add('pdf-mode');
-
-        // --- ส่วนที่ 3: ตั้งค่า Library html2pdf ---
+        // 3. ตั้งค่า PDF ให้เว้นระยะขอบและจัดบรรทัดใหม่
         const opt = {
-            margin: [10, 10, 10, 10], // ระยะขอบ บน, ซ้าย, ล่าง, ขวา (มม.)
+            margin: [15, 15, 15, 15],
             filename: 'Saranporn_CV.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
+            image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
-                scale: 2,             // ความชัด
-                useCORS: true,        // อนุญาตให้โหลดรูปภาพ
+                scale: 2, 
+                useCORS: true, 
                 letterRendering: true,
-                scrollY: 0,           // ป้องกันเนื้อหาเลื่อน
-                backgroundColor: '#ffffff' // บังคับพื้นหลังขาว
+                logging: false
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
-        // --- ส่วนที่ 4: เริ่มกระบวนการดาวน์โหลด ---
         try {
-            console.log("กำลังสร้างไฟล์ PDF...");
-            // ใช้ await เพื่อรอให้ library สร้างไฟล์จนเสร็จก่อนทำขั้นตอนถัดไป
             await html2pdf().set(opt).from(element).save();
-            console.log("ดาวน์โหลดสำเร็จ");
-        } catch (error) {
-            console.error("เกิดข้อผิดพลาด:", error);
-            alert("ไม่สามารถสร้าง PDF ได้: " + error.message);
+        } catch (e) {
+            console.error(e);
         } finally {
-            // --- ส่วนที่ 5: คืนค่าหน้าเว็บกลับมาเป็นปกติ ---
+            // 4. คืนค่าหน้าเว็บ
             element.classList.remove('pdf-mode');
             sections.forEach(item => {
                 const ct = document.getElementById(item.content);
                 if (ct) ct.style.display = 'block';
             });
-            toggleDownloadMenu(); // ปิดเมนูเลือกอัตโนมัติ
+            toggleDownloadMenu();
         }
     }
 </script>
