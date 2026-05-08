@@ -146,55 +146,52 @@ p {
 .hidden { display: none; }
 
 /* สไตล์สำหรับตอนเป็น PDF เท่านั้น */
-/* CSS สำหรับโหมด PDF ที่เน้นความยืดหยุ่น */
+/* ชุดคำสั่งทำลายสไตล์เดิม เพื่อจัดระเบียบใหม่ใน PDF */
 .pdf-mode {
-    background-color: white !important;
-    color: black !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    /* ลดขนาดภาพรวมลง 80% เพื่อให้มีที่ว่างในกระดาษมากขึ้น */
-    zoom: 0.8; 
     background: white !important;
-    width: 100% !important;
+    width: 210mm !important; /* บังคับความกว้าง A4 */
+    margin: 0 auto !important;
     display: block !important;
-    font-family: 'Arial', sans-serif !important;
 }
 
-/* ยกเลิก Flex/Grid ที่ทำให้ตัวหนังสือซ้อนกัน */
+/* ล้างค่า Position ทั้งหมดที่ทำให้ตัวหนังสือวิ่งมาทับกัน */
 .pdf-mode * {
-    position: static !important; /* ห้ามใช้ absolute/fixed */
+    position: static !important; 
+    display: block !important;   /* บังคับให้เรียงต่อกันแนวตั้งเท่านั้น */
     float: none !important;
-    display: block !important; /* บังคับเรียงต่อกันลงมา */
-    width: 100% !important;
-    opacity: 1 !important;     /* แก้ตัวหนังสือจาง */
-    color: black !important;   /* บังคับตัวหนังสือดำเข้ม */
+    width: auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    transform: none !important;  /* ล้างค่าการเยื้องหรือหมุน */
+    text-align: left !important; /* จัดชิดซ้ายให้หมดเพื่อความเป็นระเบียบ */
+    color: black !important;
+    opacity: 1 !important;
 }
 
+/* จัดการรูปโปรไฟล์ให้เลิกซ้อน */
 .pdf-mode img {
-    display: block !important;
-    margin: 10px auto !important; /* จัดรูปไว้กลาง */
-    width: 120px !important;      /* คุมขนาดรูปโปรไฟล์ */
+    width: 120px !important;
     height: auto !important;
+    margin: 10px auto !important; /* จัดรูปไว้กลาง */
+    border-radius: 10px !important;
 }
 
-.pdf-mode h1, .pdf-mode h2 {
-    text-align: center !important;
-    margin: 15px 0 !important;
-    font-weight: bold !important;
+/* ปรับหัวข้อให้เด่นและไม่ซ้อน */
+.pdf-mode h1 { font-size: 22pt !important; text-align: center !important; margin-bottom: 20px !important; }
+.pdf-mode h2 { 
+    font-size: 16pt !important; 
+    border-bottom: 2px solid #333 !important; 
+    margin-top: 20px !important;
+    padding-bottom: 5px !important;
 }
 
-.pdf-mode p, .pdf-mode span, .pdf-mode li {
+/* ปรับเนื้อหาให้อ่านง่าย */
+.pdf-mode p, .pdf-mode li, .pdf-mode span {
     font-size: 11pt !important;
-    line-height: 1.6 !important;
-    margin-bottom: 5px !important;
-    text-align: left !important;
-}
-
-/* ลบเงาและกรอบออกให้หมด */
-.pdf-mode .card, .pdf-mode div {
-    border: none !important;
-    box-shadow: none !important;
-    padding: 5px 0 !important;
+    line-height: 1.5 !important;
+    margin-bottom: 8px !important;
+    display: list-item !important; /* ถ้าเป็นรายการให้มีจุดนำหน้า */
+    margin-left: 20px !important;
 }
 
     </style>
@@ -339,10 +336,10 @@ p {
         const element = document.getElementById('cv-content');
         if (!element) return;
 
-        // 1. เข้าโหมด PDF
+        // 1. ใส่คลาสเพื่อล้างสไตล์เว็บ เปลี่ยนเป็นสไตล์เอกสาร
         element.classList.add('pdf-mode');
 
-        // 2. จัดการการแสดงผลตาม Checkbox
+        // 2. ซ่อน/แสดงส่วนที่เลือก
         const sections = [
             { check: 'check-Home', content: 'content-Home' },
             { check: 'check-WorkingExperience', content: 'content-WorkingExperience' },
@@ -359,26 +356,28 @@ p {
             if (cb && ct) ct.style.display = cb.checked ? 'block' : 'none';
         });
 
-        // 3. ตั้งค่า PDF ให้เว้นระยะขอบและจัดบรรทัดใหม่
+        // 3. ตั้งค่าการสร้าง PDF
         const opt = {
             margin: [15, 15, 15, 15],
             filename: 'Saranporn_CV.pdf',
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
-                scale: 2, 
-                useCORS: true, 
+                scale: 3, // เพิ่มความชัด
+                useCORS: true,
                 letterRendering: true,
-                logging: false
+                backgroundColor: '#ffffff'
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
         try {
+            // ให้เวลาระบบจัดเรียงตัวหนังสือใหม่ 0.5 วินาทีเพื่อให้แน่ใจว่าไม่ซ้อน
+            await new Promise(resolve => setTimeout(resolve, 500));
             await html2pdf().set(opt).from(element).save();
         } catch (e) {
             console.error(e);
         } finally {
-            // 4. คืนค่าหน้าเว็บ
+            // คืนค่าหน้าเว็บให้สวยเหมือนเดิม
             element.classList.remove('pdf-mode');
             sections.forEach(item => {
                 const ct = document.getElementById(item.content);
