@@ -172,6 +172,35 @@ p {
     line-height: 1.5 !important;
 }
 
+/* สไตล์สำหรับปรับปรุงหน้ากระดาษ PDF */
+.pdf-mode {
+    width: 210mm !important; /* บังคับความกว้างเท่า A4 */
+    max-width: 210mm !important;
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.pdf-mode .card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    page-break-inside: avoid; /* สำคัญ: ป้องกันการตัดแบ่งก้อนเนื้อหาขาดครึ่งหน้า */
+    word-wrap: break-word !important; /* บังคับตัดคำถ้าข้อความยาวเกิน */
+    overflow-wrap: break-word !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin-bottom: 15px !important;
+}
+
+/* ปรับขนาดตัวอักษรให้มาตรฐานเอกสาร (11pt - 12pt) */
+.pdf-mode h1 { font-size: 22pt !important; text-align: center; }
+.pdf-mode h2 { font-size: 16pt !important; border-bottom: 2px solid #333; padding-bottom: 5px; }
+.pdf-mode p, .pdf-mode li, .pdf-mode span { 
+    font-size: 11pt !important; /* ขนาดมาตรฐานอ่านง่ายบนกระดาษ */
+    line-height: 1.5 !important; 
+    text-align: justify; /* จัดเนื้อหาให้เต็มบรรทัดสวยงาม */
+}
+
     </style>
 </head>
 <body>
@@ -305,21 +334,24 @@ p {
 </div>
 
     <script>
-    // 1. เปิด-ปิดเมนูเลือก
+    // 1. ฟังก์ชันเปิด-ปิดเมนู Dropdown
     function toggleDownloadMenu() {
         const menu = document.getElementById('download-options');
-        if (menu) menu.classList.toggle('hidden');
+        if (menu) {
+            menu.classList.toggle('hidden');
+        }
     }
 
-    // 2. ฟังก์ชันจัดการเนื้อหา ปรับสไตล์ และดาวน์โหลด
+    // 2. ฟังก์ชันหลักสำหรับเตรียมเนื้อหาและสร้าง PDF
     async function prepareAndDownload() {
         const element = document.getElementById('cv-content');
         if (!element) {
-            alert("ไม่พบเนื้อหา id='cv-content'");
+            alert("ไม่พบเนื้อหาที่ต้องการดาวน์โหลด (หา id='cv-content' ไม่เจอ)");
             return;
         }
 
-        // --- ส่วนที่ 1: ตรวจสอบและซ่อน/แสดงตาม Checkbox ---
+        // --- ส่วนที่ 1: ตรวจสอบ Checkbox และ ซ่อน/แสดงเนื้อหา ---
+        // ** สำคัญ: ตรวจสอบให้แน่ใจว่า ID ใน HTML ของคุณไม่มีช่องว่าง **
         const sections = [
             { check: 'check-Home', content: 'content-Home' },
             { check: 'check-WorkingExperience', content: 'content-WorkingExperience' },
@@ -338,36 +370,38 @@ p {
             }
         });
 
-        // --- ส่วนที่ 2: ปรับโหมดเป็น PDF (ขาวดำ/ขนาดเล็กลง) ---
+        // --- ส่วนที่ 2: เปิดโหมด PDF (เปลี่ยนสี/ย่อขนาดผ่าน CSS) ---
         element.classList.add('pdf-mode');
 
-        // --- ส่วนที่ 3: ตั้งค่าการดาวน์โหลด ---
+        // --- ส่วนที่ 3: ตั้งค่า Library html2pdf ---
         const opt = {
-            margin: [10, 10, 10, 10],
+            margin: [15, 10, 15, 10], // ระยะขอบกระดาษ: บน, ซ้าย, ล่าง, ขวา (มม.)
             filename: 'Saranporn_CV.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { 
-                scale: 2, 
-                useCORS: true, 
+                scale: 2,             // ความชัด
+                useCORS: true,        // รองรับรูปภาพข้ามโดเมน
                 letterRendering: true,
-                backgroundColor: '#ffffff' // บังคับพื้นหลังขาว
+                width: 794,           // บังคับความกว้าง Canvas (A4 ที่ 96 DPI)
+                windowWidth: 794      // บังคับให้เบราว์เซอร์จัดบรรทัดใหม่ในความกว้าง 794px
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
+        // --- ส่วนที่ 4: เริ่มกระบวนการสร้างไฟล์ ---
         try {
-            console.log("กำลังสร้าง PDF...");
-            // สั่งสร้าง PDF และรอจนกว่าจะเสร็จ (await)
+            console.log("กำลังจัดรูปแบบและสร้าง PDF...");
             await html2pdf().set(opt).from(element).save();
-        } catch (e) {
-            console.error("เกิดข้อผิดพลาด:", e);
-            alert("ดาวน์โหลดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+            console.log("ดาวน์โหลดสำเร็จ!");
+        } catch (error) {
+            console.error("PDF Error:", error);
+            alert("เกิดข้อผิดพลาดในการสร้างไฟล์ กรุณาลองใหม่อีกครั้ง");
         } finally {
-            // --- ส่วนที่ 4: คืนค่าทุกอย่างกลับเป็นปกติบนหน้าเว็บ ---
-            element.classList.remove('pdf-mode'); // คืนสีหน้าเว็บ
+            // --- ส่วนที่ 5: คืนค่าหน้าเว็บให้กลับมาเป็นปกติ ---
+            element.classList.remove('pdf-mode');
             sections.forEach(item => {
                 const ct = document.getElementById(item.content);
-                if (ct) ct.style.display = 'block'; // แสดงทุกหัวข้อกลับมา
+                if (ct) ct.style.display = 'block';
             });
             toggleDownloadMenu(); // ปิดเมนูเลือก
         }
