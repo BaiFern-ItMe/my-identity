@@ -145,29 +145,31 @@ p {
 /* คลาสสำหรับซ่อน/แสดง */
 .hidden { display: none; }
 
-/* บังคับหน้าตาสำหรับ PDF เท่านั้น */
+/* สไตล์สำหรับตอนเป็น PDF เท่านั้น */
 .pdf-mode {
     background: white !important;
     color: black !important;
-    width: 794px !important; /* บังคับความกว้างให้เท่ากับขนาด A4 (96 DPI) */
-    margin: 0 auto !important;
-    padding: 20px !important;
+    width: 800px !important; /* บังคับขนาดให้พอดีหน้ากระดาษ */
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
+/* ลบกรอบและเงาของ Card */
 .pdf-mode .card {
     background: white !important;
-    color: black !important;
-    border: 1px solid #ccc !important; /* เพิ่มเส้นขอบให้ดูเป็นเอกสาร */
-    box-shadow: none !important;
-    margin-bottom: 10px !important;
-    page-break-inside: avoid; /* ป้องกันเนื้อหาขาดกลางหน้ากระดาษ */
+    border: none !important;      /* ลบเส้นขอบออก */
+    box-shadow: none !important;  /* ลบเงาที่ดูเหมือนกรอบออก */
+    margin: 0 !important;
+    padding: 10px 0 !important;   /* ปรับระยะห่างให้ดูเป็นระเบียบ */
 }
 
-/* ปรับขนาดตัวอักษรให้เล็กลงเหมือนเอกสารทางการ */
-.pdf-mode h1, .pdf-mode h2, .pdf-mode h3 { color: black !important; }
-.pdf-mode p, .pdf-mode span, .pdf-mode li { 
-    font-size: 12pt !important; 
+/* ปรับขนาดตัวอักษรให้เล็กลง */
+.pdf-mode h1 { font-size: 20pt !important; color: black !important; }
+.pdf-mode h2 { font-size: 16pt !important; color: black !important; border-bottom: 1px solid #ccc; }
+.pdf-mode p, .pdf-mode li, .pdf-mode span { 
+    font-size: 11pt !important; 
     color: #333 !important;
+    line-height: 1.5 !important;
 }
 
     </style>
@@ -342,7 +344,7 @@ p {
         // --- ส่วนที่ 3: ตั้งค่าการดาวน์โหลด ---
         const opt = {
             margin: [10, 10, 10, 10],
-            filename: 'Professional_CV.pdf',
+            filename: 'Saranporn_CV.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { 
                 scale: 2, 
