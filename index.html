@@ -1,403 +1,375 @@
-<!doctype html>
-<html lang=""th">
+<!DOCTYPE html>
+<html lang="th">
 <head>
+    <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow">
-    <meta charset=""utf-8">
     <title>The Identity of Saranporn</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <style>
+        /* --- สไตล์เริ่มต้นของหน้าเว็บ --- */
         html {
-    scroll-behavior: smooth; /* ทำให้หน้าเว็บเลื่อนลงแบบนุ่มนวล */
-}
+            scroll-behavior: smooth; /* ทำให้หน้าเว็บเลื่อนขึ้นลงแบบนุ่มนวล */
+        }
         body { 
-    font-family: sans-serif; 
-    margin: 0; 
-    background-color: #0d3b66; /* สีพื้นหลังหลัก */
-}
-.navbar {
-    position: sticky; /* ทำให้เมนูค้างไว้ที่ด้านบน */
-    top: 0;
-}
+            font-family: sans-serif; 
+            margin: 0; 
+            background-color: #0d3b66; /* สีน้ำเงินเข้มพื้นหลังหลัก */
+        }
+
+        /* --- ส่วนเมนูบาร์ด้านบน (Navigation Bar) --- */
         .navbar {
-    background-color: #0d3b66; /* สีพื้นหลังเมนู */
-    display: flex;
-    justify-content: center;
-    padding: 5px 0;
-    border-bottom: 1px solid #eee; /* เพิ่มเส้นคั่นบางๆ แทนเพื่อให้เห็นขอบเมนู */
-}
+            background-color: #0d3b66; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+            position: sticky; /* ทำให้เมนูตรึงค้างไว้ที่ด้านบนสุดเวลาเลื่อนหน้า */
+            top: 0;
+            z-index: 1000;
+        }
         .navbar a {
-    color: #faf0ce; /* เปลี่ยนสีตัวอักษรเมนูเป็นสีเข้มเพื่อให้มองเห็นบนพื้นขาว */
-    text-decoration: none;
-    padding: 10px 20px;
-    font-size: 16px;
-}
+            color: #faf0ce; /* สีตัวอักษรของลิงก์เมนู */
+            text-decoration: none; /* ลบเส้นใต้ลิงก์ */
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        /* --- สไตล์กล่องเนื้อหา (Card Component) --- */
         .card {
-    scroll-margin-top: 60px; /* ปรับตัวเลขนี้ให้เท่ากับ หรือมากกว่าความสูงของแถบเมนูของคุณ */
-    background: transparent; /* หรือเปลี่ยนเป็น transparent ถ้าไม่อยากเห็นขอบ card */
-    padding: 30px;
-    width: 600px auto;
-    margin: 5px auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: 0.3s; /* ทำให้การเปลี่ยนแปลงดูนุ่มนวล */
-    transition: 0.3s; /* ทำให้การเปลี่ยนแปลงดูนุ่มนวล */
-    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1);
-    /* ถ้าอยากให้เรียบไปหมด ให้ลบ box-shadow ออก */
-}
-.card:hover {
-    transform: translateY(-5px); /* ขยับการ์ดขึ้นข้างบน 5px */
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ดูสูงขึ้น */
-}
+            scroll-margin-top: 60px; /* เว้นระยะด้านบนเมื่อกดลิงก์สมูทสกรอลล์ ไม่ให้เมนูบัง */
+            background: transparent; 
+            padding: 30px;
+            max-width: 800px;
+            margin: 5px auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* เอฟเฟกต์เคลื่อนไหวนุ่มนวล */
+        }
+        .card:hover {
+            transform: translateY(-5px); /* ยกกล่องลอยขึ้น 5px เมื่อเอาเมาส์มาชี้ */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* เพิ่มเงาให้ดูมีมิติ */
+        }
         .card-content {
-            flex: 1; /* กินพื้นที่ฝั่งซ้าย */
+            flex: 1; /* จัดเนื้อหาฝั่งซ้ายให้ขยายเต็มพื้นที่ที่เหลือ */
             padding-right: 20px;
         }
+
+        /* --- ส่วนประกอบย่อยและตัวอักษร --- */
         .profile-img {
             width: 220px;
             height: 220px;
-            object-fit: cover;
-            
-            /* -- เปลี่ยนตรงนี้ให้เป็นเหลี่ยม -- */
-            border-radius: 10px; /* เหลี่ยมโค้งนิดหน่อย */
-            
+            object-fit: cover; /* จัดการรูปไม่ให้เบี้ยวหรือผิดสัดส่วน */
+            border-radius: 10px; /* ขอบโค้งมนเล็กน้อย */
             border: 3px solid #eee;
         } 
-        /* ปรับขนาดหัวข้อ (H1) */
-h1 {
-    font-size: 30px;    /* ปรับตัวเลขตามใจชอบ ยิ่งมากยิ่งใหญ่ */
-    color: #e1dad8;
-    margin: 0 0 0px 0; /* บน0 ขวา0 ล่าง5px ซ้าย0 */
-}
+        h1 {
+            font-size: 30px;    
+            color: #e1dad8;
+            margin: 0 0 10px 0; 
+        }
+        p {
+            font-size: 16px;    
+            line-height: 1.5; /* เพิ่มระยะห่างระหว่างบรรทัดเพื่อให้อ่านง่าย */
+            color: #e1dad8;
+        }
 
-/* ปรับขนาดข้อความทั่วไป (P) */
-p {
-    font-size: 16px;    /* ขนาดมาตรฐานส่วนใหญ่อยู่ที่ 16px - 20px */
-    line-height: 1;   /* แถม: ช่วยเพิ่มระยะห่างระหว่างบรรทัด ทำให้อ่านง่ายขึ้น */
-    color: #e1dad8;
-}
+        /* --- ระบบปุ่มและเมนูดาวน์โหลด (Dropdown Menu) --- */
+        .download-container {
+            display: inline-block;
+            position: relative;
+        }
+        .nav-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .dropdown-content {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            min-width: 230px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            padding: 15px;
+            z-index: 1001;
+            border-radius: 8px;
+            text-align: left;
+            color: #333;
+        }
+        .confirm-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .hidden { 
+            display: none; /* คลาสสำหรับซ่อนองค์ประกอบ */
+        }
 
-/* ปรับขนาดตัวอักษรในแถบเมนู */
-.navbar a {
-    font-size: 14px;    /* เมนูอาจจะใช้ตัวเล็กกว่าเนื้อหาหน่อย */
-    color: #e1dad8;
-    text-decoration: none;
-    padding: 10px 20px;
-}
-/* เมนูเลือกหัวข้อ (จะเห็นเฉพาะบนเว็บ ไม่ติดไปใน PDF) */
-.cv-controls {
-    background: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 20px auto;
-    max-width: 600px;
-    border: 1px solid #ddd;
-    text-align: center; /* ใช้ความรู้เรื่องจัดกึ่งกลางที่เรียนไปมาใช้ที่นี่ */
-}
-
-/* ปุ่มดาวน์โหลดให้ดูเด่น */
-.download-btn {
-    background-color: #28a745;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-/* ตกแต่งปุ่มบนเมนู */
-.nav-btn {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* กล่องรายการเลือกหัวข้อ */
-.dropdown-content {
-    position: absolute;
-    right: 0;
-    background-color: white;
-    min-width: 200px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-    padding: 15px;
-    z-index: 1000;
-    border-radius: 8px;
-    text-align: left;
-    color: #333;
-}
-
-.confirm-btn {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* คลาสสำหรับซ่อน/แสดง */
-.hidden { display: none; }
-
-/* สไตล์สำหรับตอนเป็น PDF เท่านั้น */
-/* ชุดคำสั่งทำลายสไตล์เดิม เพื่อจัดระเบียบใหม่ใน PDF */
-.pdf-mode {
-    background: white !important;
-    width: 210mm !important; /* บังคับความกว้าง A4 */
-    margin: 0 auto !important;
-    display: block !important;
-}
-
-/* ล้างค่า Position ทั้งหมดที่ทำให้ตัวหนังสือวิ่งมาทับกัน */
-.pdf-mode * {
-    position: static !important; 
-    display: block !important;   /* บังคับให้เรียงต่อกันแนวตั้งเท่านั้น */
-    float: none !important;
-    width: auto !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    transform: none !important;  /* ล้างค่าการเยื้องหรือหมุน */
-    text-align: left !important; /* จัดชิดซ้ายให้หมดเพื่อความเป็นระเบียบ */
-    color: black !important;
-    opacity: 1 !important;
-}
-
-/* จัดการรูปโปรไฟล์ให้เลิกซ้อน */
-.pdf-mode img {
-    width: 120px !important;
-    height: auto !important;
-    margin: 10px auto !important; /* จัดรูปไว้กลาง */
-    border-radius: 10px !important;
-}
-
-/* ปรับหัวข้อให้เด่นและไม่ซ้อน */
-.pdf-mode h1 { font-size: 22pt !important; text-align: center !important; margin-bottom: 20px !important; }
-.pdf-mode h2 { 
-    font-size: 16pt !important; 
-    border-bottom: 2px solid #333 !important; 
-    margin-top: 20px !important;
-    padding-bottom: 5px !important;
-}
-
-/* ปรับเนื้อหาให้อ่านง่าย */
-.pdf-mode p, .pdf-mode li, .pdf-mode span {
-    font-size: 11pt !important;
-    line-height: 1.5 !important;
-    margin-bottom: 8px !important;
-    display: list-item !important; /* ถ้าเป็นรายการให้มีจุดนำหน้า */
-    margin-left: 20px !important;
-}
-
+        /* ===================================================
+           สไตล์สำหรับแปลงหน้าเว็บเป็นเอกสาร PDF ตัวจริง (pdf-mode)
+           =================================================== */
+        .pdf-mode {
+            background: white !important;
+            width: 210mm !important; /* บังคับขนาดหน้ากระดาษ A4 */
+            margin: 0 auto !important;
+            display: block !important;
+            padding: 20mm !important; /* เพิ่มขอบกระดาษ */
+        }
+        .pdf-mode * {
+            position: static !important; /* ล้างสไตล์การลอยตัวป้องกันข้อความทับกัน */
+            display: block !important;   /* บังคับเรียงต่อกันจากบนลงล่าง */
+            float: none !important;
+            width: auto !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            transform: none !important;  
+            text-align: left !important; 
+            color: black !important; /* บังคับอักษรสีดำทั้งหมดเพื่อให้พิมพ์ง่าย */
+            opacity: 1 !important;
+        }
+        .pdf-mode img {
+            width: 120px !important;
+            height: auto !important;
+            margin: 10px auto !important; 
+            border-radius: 10px !important;
+        }
+        .pdf-mode h1 { 
+            font-size: 22pt !important; 
+            text-align: center !important; 
+            margin-bottom: 20px !important; 
+        }
+        .pdf-mode h2 { 
+            font-size: 16pt !important; 
+            border-bottom: 2px solid #333 !important; 
+            margin-top: 20px !important;
+            padding-bottom: 5px !important;
+        }
+        .pdf-mode p, .pdf-mode li, .pdf-mode span {
+            font-size: 11pt !important;
+            line-height: 1.5 !important;
+            margin-bottom: 8px !important;
+            display: list-item !important; /* เปลี่ยนสไตล์เป็นรายการจุดนำหน้า */
+            margin-left: 20px !important;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-    <a href="#Home">Home</a>
-    <a href="#WorkingExperience">Working Experience</a>
-    <a href="#WorkingCertificate">Working Certificate</a>
-    <a href="#Skills">Skills</a>
-    <a href="#Education">Education</a>
-    <a href="#Activities">Activities</a>
-    <a href="#Contact">Contact</a>
 
-    <li class="download-item" style="list-style: none; display: inline-block; position: relative;">
-    <button class="nav-btn" onclick="toggleDownloadMenu()">Download CV ***COMING SOON***</button>
-    
-    <div id="download-options" class="dropdown-content hidden" style="position: absolute; background: white; padding: 15px; border: 1px solid #ccc; z-index: 100;">
-        <p style="color: black; font-weight: bold; margin-top: 0;">Select:</p>
-        
-        <label style="color: black;"><input type="checkbox" id="check-Home" checked> Home</label><br>
-        <label style="color: black;"><input type="checkbox" id="check-WorkingExperience" checked> Working Experience</label><br>
-        <label style="color: black;"><input type="checkbox" id="check-WorkingCertificate" checked> Working Certificate</label><br>
-        <label style="color: black;"><input type="checkbox" id="check-Skills" checked> Skills</label><br>
-        <label style="color: black;"><input type="checkbox" id="check-Education" checked> Education</label><br>
-        <label style="color: black;"><input type="checkbox" id="check-Activities" checked> Activities</label><br>
-        <label style="color: black;"><input type="checkbox" id="check-Contact" checked> Contact</label><br>
-        
-        <hr>
-        <button class="confirm-btn" onclick="prepareAndDownload()" style="width: 100%; cursor: pointer;">Download Now</button>
-    </div>
-    </li>
+    <nav class="navbar">
+        <a href="#Home">Home</a>
+        <a href="#WorkingExperience">Working Experience</a>
+        <a href="#WorkingCertificate">Working Certificate</a>
+        <a href="#Skills">Skills</a>
+        <a href="#Education">Education</a>
+        <a href="#Activities">Activities</a>
+        <a href="#Contact">Contact</a>
+
+        <div class="download-container">
+            <button class="nav-btn" onclick="toggleDownloadMenu()">Download CV ***COMING SOON***</button>
+            
+            <div id="download-options" class="dropdown-content hidden">
+                <p style="color: black; font-weight: bold; margin-top: 0;">Select:</p>
+                <label><input type="checkbox" id="check-Home" checked> Home</label><br>
+                <label><input type="checkbox" id="check-WorkingExperience" checked> Working Experience</label><br>
+                <label><input type="checkbox" id="check-WorkingCertificate" checked> Working Certificate</label><br>
+                <label><input type="checkbox" id="check-Skills" checked> Skills</label><br>
+                <label><input type="checkbox" id="check-Education" checked> Education</label><br>
+                <label><input type="checkbox" id="check-Activities" checked> Activities</label><br>
+                <label><input type="checkbox" id="check-Contact" checked> Contact</label><br>
+                <hr>
+                <button class="confirm-btn" onclick="prepareAndDownload()">Download Now</button>
+            </div>
+        </div>
     </nav>
 
-<!-- [ระดับที่ 2] เพิ่ม <div id="cv-content"> มาคลุม Card ทั้งหมดที่จะเอาลง PDF -->
-<div id="cv-content">
+    <div id="cv-content">
 
-    <!-- [ระดับที่ 3] เพิ่ม <div id="sec-..."> มาคลุม Card แต่ละใบ เพื่อให้เปิด-ปิดได้ -->
-    <div id="content-Home">
-    <div id="Home" class="card">
-        <div class="card-content">
-        <h1 style="text-align: center; font-size: 60px">SARANPORN PHOOKOSOT</h1>
-        <p style="text-align: center; font-size: 30px; font-weight: bold;">QMS & DCC Supervisor</p>
-        <p style="text-align: center; font-size: 18px">Strong focus on data integrity and organization.</p>
-        <p style="text-align: center; font-size: 18px">I am a dedicated independent contributor who values deep work and precision.</p>
+        <div id="content-Home">
+            <div id="Home" class="card">
+                <div class="card-content">
+                    <h1 style="text-align: center; font-size: 60px">SARANPORN PHOOKOSOT</h1>
+                    <p style="text-align: center; font-size: 30px; font-weight: bold;">QMS & DCC Supervisor</p>
+                    <p style="text-align: center; font-size: 18px">Strong focus on data integrity and organization.</p>
+                    <p style="text-align: center; font-size: 18px">I am a dedicated independent contributor who values deep work and precision.</p>
+                </div>
+                <img src="Profile Pic.jpg" alt="รูปของฉัน" class="profile-img">
+            </div>
         </div>
-        <img src="Profile Pic.jpg" alt="รูปของฉัน" class="profile-img">
-    </div>
-    </div>
 
-    <div id="content-WorkingExperience">
-    <div id="WorkingExperience" class="card">
-        <div class="card-content">
-        <h1>Working Experience</h1>
-        <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2021 - Present</p>
-        <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">MHI Automotive Climate Control (Thailand) Co., Ltd.</p>
-        <p style="text-indent: 40px;">***COMING SOON***</p>
+        <div id="content-WorkingExperience">
+            <div id="WorkingExperience" class="card">
+                <div class="card-content">
+                    <h1>Working Experience</h1>
+                    <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2021 - Present</p>
+                    <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">MHI Automotive Climate Control (Thailand) Co., Ltd.</p>
+                    <p style="text-indent: 40px;">***COMING SOON***</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="content-WorkingCertificate">
+            <div id="WorkingCertificate" class="card">
+                <div class="card-content">
+                    <h1>Working Certificate</h1>
+                    <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2024</p>
+                    <p style="text-indent: 40px;">- The Transition Workshop for Changes in the APQP 3rd edition & Control Plan 1st edition manuals</p>
+                    <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2023</p>
+                    <p style="text-indent: 40px;">- ISO/SAE 21434:2021 Requirements</p>
+                    <p style="text-indent: 40px;">- Keys to Success in Surveillance Audi</p>
+                    <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2022</p>
+                    <p style="text-indent: 40px;">- Refreshing IATF 16949:2016 Requirements</p>
+                    <p style="text-indent: 40px;">- Professional Internal Auditor for IATF 16949:2016</p>
+                    <p style="text-indent: 40px;">- Understanding, Applying and Coaching the AIAG & VDA FMEA Handbook 1st Edition (Process FMEA)</p>
+                    <p style="text-indent: 40px;">- Application of APQP 2nd Edition</p>
+                    <p style="text-indent: 40px;">- Application of PPAP 4th Edition</p>
+                    <p style="text-indent: 40px;">- Application of MSA 4th Edition</p>
+                    <p style="text-indent: 40px;">- Application of SPC 2nd Edition</p>
+                    <p style="text-indent: 40px;">- Process and Product Audit for IATF 16949:2016</p>
+                    <p style="text-indent: 40px;">- Understanding and Application of VDA6.3: Process Audit (3rd Edition, 2016)</p>
+                    <p style="text-indent: 40px;">- Context of Organization, Risk-Based Thinking & Process Approach</p>
+                    <p style="text-indent: 40px;">- Nonconformity Report (NCR/CAR) Writing and Closing Technique</p>        
+                    <p style="text-indent: 40px;">- 8D Problem Solving Techniques</p>        
+                    <p style="text-indent: 40px;">- ESD Control Program</p>
+                    <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2021</p>
+                    <p style="text-indent: 40px;">- ISO 14001:2015 Requirement</p>
+                    <p style="text-indent: 40px;">- Internal Audit for ISO 14001:2015</p>
+                    <p style="text-indent: 40px;">- Aspect and Risk Assessment Identification for Environmental Systems</p>        
+                </div>
+            </div>
+        </div>
+        
+        <div id="content-Skills">
+            <div id="Skills" class="card">
+                <div class="card-content">
+                    <h1>Skills</h1>
+                    <p style="text-indent: 25px;">***COMING SOON***</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="content-Education">
+            <div id="Education" class="card">
+                <div class="card-content">
+                    <h1>Education</h1>
+                    <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2016 - 2020 Srinakharinwirot University</p>
+                    <p style="text-indent: 40px;">B.A.Information Studies (First Class Honours)</p>
+                    <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2010 - 2016 Datdaruni School</p>
+                    <p style="text-indent: 40px;">Intensive English Program (Science - Mathematics)</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="content-Activities">
+            <div id="Activities" class="card">
+                <div class="card-content">
+                    <h1>Activities</h1>
+                    <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Learning</p>
+                    <p style="font-size: 16px; font-weight: bold; text-indent: 40px;">January - April 2024</p>
+                    <p style="text-indent: 50px;">Chinese Speaking & Listening 4 by Faculty of Humanities, Srinakharinwirot University</p>
+                    <p style="font-size: 16px; font-weight: bold; text-indent: 40px;">September 2022 - July 2023</p>
+                    <p style="text-indent: 50px;">Chinese Language Course at School of International Education, Dongbei University of Finance and Economics</p>
+                    <p style="font-size: 16px; font-weight: bold; text-indent: 40px;">January 2023</p>
+                    <p style="text-indent: 50px;">"Winter Adventure, Friendly Exchange" Winter Delegation, Harbin Normal University with Chinese Bridge</p>
+                    <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Sport</p>
+                    <p style="font-size: 16px; font-weight: bold; text-indent: 40px;">December 2025</p>
+                    <p style="text-indent: 50px;">FUN SWIM 1 KM 15+ (Open Water Swimming 0:35:52)</p>
+                    <p style="font-size: 16px; font-weight: bold; text-indent: 40px;">November 2024</p>
+                    <p style="text-indent: 50px;">FUN SWIM 1 KM (Open Water Swimming 0:48:55)</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="content-Contact">
+            <div id="Contact" class="card">
+                <div class="card-content">
+                    <h1>Contact</h1>
+                    <p style="text-indent: 25px;">Email: saranporn.phookosot@gmail.com</p>
+                    <p style="text-indent: 25px;">Line ID: srplis</p>
+                    <p style="text-indent: 25px;">Phone: +66 86 828 5027</p>
+                    <p style="text-indent: 25px;">Address: 18/99 Moo1 Sothon, Mueang Chachoengsao, Chachoengsao, Thailand, 24000</p>
+                </div>
+            </div>
         </div>
     </div>
-    </div>
-    
-    <div id="content-WorkingCertificate">
-    <div id="WorkingCertificate" class="card">
-        <div class="card-content">
-        <h1>Working Certificate</h1>
-        <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2024</p>
-        <p style="text-indent: 40px;">- The Transition Workshop for Changes in the APQP 3rd edition & Control Plan 1st edition manuals</p>
-        <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2023</p>
-        <p style="text-indent: 40px;">- ISO/SAE 21434:2021 Requirements</p>
-        <p style="text-indent: 40px;">- Keys to Success in Surveillance Audi</p>
-        <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2022</p>
-        <p style="text-indent: 40px;">- Refreshing IATF 16949:2016 Requirements</p>
-        <p style="text-indent: 40px;">- Professional Internal Auditor for IATF 16949:2016</p>
-        <p style="text-indent: 40px;">- Understanding, Applying and Coaching the AIAG & VDA FMEA Handbook 1st Edition (Process FMEA)</p>
-        <p style="text-indent: 40px;">- Application of APQP 2nd Edition</p>
-        <p style="text-indent: 40px;">- Application of PPAP 4th Edition</p>
-        <p style="text-indent: 40px;">- Application of MSA 4th Edition</p>
-        <p style="text-indent: 40px;">- Application of SPC 2nd Edition</p>
-        <p style="text-indent: 40px;">- Process and Product Audit for IATF 16949:2016</p>
-        <p style="text-indent: 40px;">- Understanding and Application of VDA6.3: Process Audit (3rd Edition, 2016)</p>
-        <p style="text-indent: 40px;">- Context of Organization, Risk-Based Thinking & Process Approach</p>
-        <p style="text-indent: 40px;">- Nonconformity Report (NCR/CAR) Writing and Closing Technique</p>        
-        <p style="text-indent: 40px;">- 8D Problem Solving Techniques</p>        
-        <p style="text-indent: 40px;">- ESD Control Program</p>
-        <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Year 2021</p>
-        <p style="text-indent: 40px;">- ISO 14001:2015 Requirement</p>
-        <p style="text-indent: 40px;">- Internal Audit for ISO 14001:2015</p>
-        <p style="text-indent: 40px;">- Aspect and Risk Assessment Identification for Environmental Systems</p>        
-        </div>
-    </div>
-    </div>
-    
-    <div id="content-Skills">
-    <div id="Skills" class="card">
-        <div class="card-content">
-        <h1>Skills</h1>
-        <p style="text-indent: 25px;">***COMING SOON***</p>
-        </div>
-    </div>
-    </div>
-    
-    <div id="content-Education">
-    <div id="Education" class="card">
-        <div class="card-content">
-        <h1>Education</h1>
-        <p style="font-size: 20px; font-weight: bold;text-indent: 25px;">Year 2016 - 2020 Srinakharinwirot University</p>
-        <p style="text-indent: 40px;">B.A.Information Studies (First Class Honours)</p>
-        <p style="font-size: 20px; font-weight: bold;text-indent: 25px;">Year 2010 - 2016 Datdaruni School</p>
-        <p style="text-indent: 40px;">Intensive English Program (Science - Mathematics)</p>
-        </div>
-    </div>
-    </div>
-    
-    <div id="content-Activities">
-    <div id="Activities" class="card">
-        <div class="card-content">
-        <h1>Activities</h1>
-        <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Learning</p>
-        <p style="font-size: 16px; font-weight: bold; text-indent: 40px;">January - April 2024</p>
-        <p style="text-indent: 50px;">Chinese Speaking & Listening 4 by Faculty of Humanities, Srinakharinwirot University</p>
-        <p style="font-size: 16px; font-weight: bold; text-indent: 40px;">September 2022 - July 2023</p>
-        <p style="text-indent: 50px;">Chinese Language Course at School of International Education, Dongbei University of Finance and Economics</p>
-        <p style="font-size: 16px; font-weight: bold; text-indent: 40px;">January 2023</p>
-        <p style="text-indent: 50px;">"Winter Adventure, Friendly Exchange" Winter Delegation, Harbin Normal University with Chinese Bridge</p>
-        <p style="font-size: 20px; font-weight: bold; text-indent: 25px;">Sport</p>
-        <p style="font-size: 16px; font-weight: bold; text-indent: 40px;">December 2025</p>
-        <p style="text-indent: 50px;">FUN SWIM 1 KM 15+ (Open Water Swimming 0:35:52)</p>
-        <p style="font-size: 16px; font-weight: bold; text-indent: 40px;">November 2024</p>
-        <p style="text-indent: 50px;">FUN SWIM 1 KM (Open Water Swimming 0:48:55)</p>
-        </div>
-    </div>
-    </div>
-    
-    <div id="content-Contact">
-    <div id="Contact" class="card">
-        <div class="card-content">
-        <h1>Contact</h1>
-        <p style="text-indent: 25px;">Email: saranporn.phookosot@gmail.com</p>
-        <p style="text-indent: 25px;">Line ID: srplis</p>
-        <p style="text-indent: 25px;">Phone: +66 86 828 5027</p>
-        <p style="text-indent: 25px;">Address: 18/99 Moo1 Sothon, Mueang Chachoengsao, Chachoengsao, Thailand, 24000</p>
-        </div>
-    </div>
-    </div>
-</div>
 
     <script>
-    function toggleDownloadMenu() {
-        const menu = document.getElementById('download-options');
-        if (menu) menu.classList.toggle('hidden');
-    }
-
-    async function prepareAndDownload() {
-        const element = document.getElementById('cv-content');
-        if (!element) return;
-
-        // 1. ใส่คลาสเพื่อล้างสไตล์เว็บ เปลี่ยนเป็นสไตล์เอกสาร
-        element.classList.add('pdf-mode');
-
-        // 2. ซ่อน/แสดงส่วนที่เลือก
-        const sections = [
-            { check: 'check-Home', content: 'content-Home' },
-            { check: 'check-WorkingExperience', content: 'content-WorkingExperience' },
-            { check: 'check-WorkingCertificate', content: 'content-WorkingCertificate' },
-            { check: 'check-Skills', content: 'content-Skills' },
-            { check: 'check-Education', content: 'content-Education' },
-            { check: 'check-Activities', content: 'content-Activities' },
-            { check: 'check-Contact', content: 'content-Contact' }
-        ];
-
-        sections.forEach(item => {
-            const cb = document.getElementById(item.check);
-            const ct = document.getElementById(item.content);
-            if (cb && ct) ct.style.display = cb.checked ? 'block' : 'none';
-        });
-
-        // 3. ตั้งค่าการสร้าง PDF
-        const opt = {
-            margin: [15, 15, 15, 15],
-            filename: 'Saranporn_CV.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { 
-                scale: 3, // เพิ่มความชัด
-                useCORS: true,
-                letterRendering: true,
-                backgroundColor: '#ffffff'
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        try {
-            // ให้เวลาระบบจัดเรียงตัวหนังสือใหม่ 0.5 วินาทีเพื่อให้แน่ใจว่าไม่ซ้อน
-            await new Promise(resolve => setTimeout(resolve, 500));
-            await html2pdf().set(opt).from(element).save();
-        } catch (e) {
-            console.error(e);
-        } finally {
-            // คืนค่าหน้าเว็บให้สวยเหมือนเดิม
-            element.classList.remove('pdf-mode');
-            sections.forEach(item => {
-                const ct = document.getElementById(item.content);
-                if (ct) ct.style.display = 'block';
-            });
-            toggleDownloadMenu();
+        // ฟังก์ชันสำหรับสลับสถานะเปิด-ปิดเมนูเช็กบ็อกซ์ดาวน์โหลด
+        function toggleDownloadMenu() {
+            const menu = document.getElementById('download-options');
+            if (menu) menu.classList.toggle('hidden');
         }
-    }
-</script>
+
+        // ฟังก์ชันหลักในการจัดเตรียมเอกสารและดาวน์โหลดเป็น PDF
+        async function prepareAndDownload() {
+            const element = document.getElementById('cv-content');
+            if (!element) return;
+
+            // 1. เพิ่มคลาสสไตล์กระดาษ PDF ให้กับเนื้อหาหลัก
+            element.classList.add('pdf-mode');
+
+            // 2. สร้างอาร์เรย์เก็บคู่ปุ่มเช็กและไอดีส่วนเนื้อหา
+            const sections = [
+                { check: 'check-Home', content: 'content-Home' },
+                { check: 'check-WorkingExperience', content: 'content-WorkingExperience' },
+                { check: 'check-WorkingCertificate', content: 'content-WorkingCertificate' },
+                { check: 'check-Skills', content: 'content-Skills' },
+                { check: 'check-Education', content: 'content-Education' },
+                { check: 'check-Activities', content: 'content-Activities' },
+                { check: 'check-Contact', content: 'content-Contact' }
+            ];
+
+            // วนลูปตรวจสอบ หากเช็กบ็อกซ์ถูกติ๊กให้แสดงผล (block) ถ้าไม่ให้ซ่อนไว้ (none)
+            sections.forEach(item => {
+                const cb = document.getElementById(item.check);
+                const ct = document.getElementById(item.content);
+                if (cb && ct) ct.style.display = cb.checked ? 'block' : 'none';
+            });
+
+            // 3. กำหนดค่าออปชันสำหรับ Library html2pdf
+            const opt = {
+                margin: [15, 15, 15, 15], // ขอบกระดาษ [บน, ซ้าย, ล่าง, ขวา] (มิลลิเมตร)
+                filename: 'Saranporn_CV.pdf', // ชื่อไฟล์ที่จะได้รับ
+                image: { type: 'jpeg', quality: 1 }, // ตั้งค่ารูปภาพคุณภาพสูงสุด
+                html2canvas: { 
+                    scale: 3, // ขยายภาพ 3 เท่าเพื่อให้ซูมแล้วตัวหนังสือไม่แตก
+                    useCORS: true, // เปิดยอมรับการดึงรูปภาพข้ามเซิร์ฟเวอร์
+                    letterRendering: true, // บังคับให้ประมวลผลฟอนต์ทีละตัวอักษรเพื่อความคมชัด
+                    backgroundColor: '#ffffff' // พื้นหลังกระดาษสีขาว
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // กำหนดไซส์กระดาษแนวตั้ง A4
+            };
+
+            try {
+                // รอระบบเรนเดอร์สไตล์ใหม่ 0.5 วินาที เพื่อไม่ให้ฟอนต์วิ่งชนกัน
+                await new Promise(resolve => setTimeout(resolve, 500));
+                // เรียกใช้คลังคำสั่งเพื่อแปลงไฟล์และกดดาวน์โหลดอัตโนมัติ
+                await html2pdf().set(opt).from(element).save();
+            } catch (e) {
+                console.error('เกิดข้อผิดพลาดในการสร้าง PDF:', e);
+            } finally {
+                // คืนค่ารูปแบบสไตล์หน้าเว็บเดิมและแสดงส่วนเนื้อหาทั้งหมดกลับมาหลังจากดาวน์โหลดเสร็จ
+                element.classList.remove('pdf-mode');
+                sections.forEach(item => {
+                    const ct = document.getElementById(item.content);
+                    if (ct) ct.style.display = 'block';
+                });
+                toggleDownloadMenu(); // ปิดหน้าต่างเมนูสวิตช์ดาวน์โหลด
+            }
+        }
+    </script>
 </body>
 </html>
