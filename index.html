@@ -182,33 +182,44 @@
     text-indent: 0 !important;        /* ล้างค่าการเยื้องเดิมบนหน้าเว็บ (ถ้ามี) */
 }
 
-/* 6. ปรับขนาดรูปโปรไฟล์ใน PDF ให้กะทัดรัด และล็อกตำแหน่งขวาบนสุด */
-.pdf-mode .profile-img {
-    width: 30mm !important;          /* ปรับขนาดตามความเหมาะสม */
-    height: 30mm !important;
-    object-fit: cover !important;
-    border: 1px solid #ddd !important;
-    border-radius: 8px !important;
-
-    /* ใส่ชุดคำสั่งล็อกตำแหน่งขวาบนสุดตรงนี้ */
-    position: absolute !important;
-    top: 5mm !important;             /* ห่างจากขอบบนสุดของกระดาษ */
-    right: 5mm !important;           /* ห่างจากขอบขวาสุดของกระดาษ */
-    margin: 0 !important;
-    z-index: 9999 !important;        /* ดันให้อยู่ชั้นบนสุดเสมอ */
+/* ปรับแต่งกล่องหน้าแรกใน PDF ให้จัดเรียงแนวนอนเคียงคู่กับรูปภาพ */
+.pdf-mode #Home {
+    display: flex !important;
+    flex-direction: row !important;      /* จัดเรียงข้อความและรูปให้อยู่ในแนวขนานกัน */
+    align-items: center !important;     /* จัดให้รูปภาพและข้อความอยู่กึ่งกลางในแนวตั้งเท่ากัน */
+    justify-content: space-between !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 20px !important;     /* เพิ่มระยะห่างด้านล่างเพื่อดันหัวข้อ Experience ลงไป */
 }
 
-/* ปรับตำแหน่งหัวข้อแรกเพื่อให้หลบรูปภาพฝั่งขวา */
-.pdf-mode #Home {
-    width: 75% !important;           /* จำกัดความกว้างเนื้อหาฝั่งซ้ายให้หลบรูปภาพ */
-    max-width: 75% !important;
+/* ควบคุมขนาดพื้นที่กล่องข้อความ 3 บรรทัดแรก */
+.pdf-mode #Home .card-content {
+    display: block !important;
+    width: 70% !important;               /* จำกัดพื้นที่ข้อความฝั่งซ้ายไว้ที่ 70% */
+    max-width: 70% !important;
+    padding: 0 !important;
 }
 
 .pdf-mode #Home h1 {
     text-align: left !important;
-    font-size: 12pt !important;      /* ปรับขนาดชื่อให้เด่นขึ้นเล็กน้อย */
+    font-size: 14pt !important;          /* ขนาดชื่อ SARANPORN PHOOKOSOT */
     border-bottom: none !important;
-    margin-bottom: 5px !important;
+    margin-bottom: 8px !important;
+}
+
+/* 6. จัดการรูปโปรไฟล์ให้อยู่แนวเดียวกับข้อความและขนาดสมดุลกัน */
+.pdf-mode .profile-img {
+    width: 28mm !important;              /* ปรับย่อขนาดความกว้างรูปภาพลงเล็กน้อยให้พอดีสัดส่วนข้อความ */
+    height: 28mm !important;             /* ปรับความสูงให้สมดุลเป็นสี่เหลี่ยมจัตุรัส */
+    object-fit: cover !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    
+    /* ยกเลิกการปักพิกัด absolute และ float เพื่อให้ระบบ Flexbox จัดการระเบียบแนวเส้น */
+    position: static !important;         
+    float: none !important;              
+    margin: 0 !important;
 }
     </style>
 </head>
