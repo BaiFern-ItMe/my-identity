@@ -239,6 +239,7 @@
             
             <div id="download-options" class="dropdown-content hidden">
                 <p style="color: black; font-weight: bold; margin-top: 0;">Select:</p>
+                <label><input type="checkbox" id="check-ProfileImg" checked> Profile Image</label><br>
                 <label><input type="checkbox" id="check-Home" checked> Home</label><br>
                 <label><input type="checkbox" id="check-Experience" checked> Experience</label><br>
                 <label><input type="checkbox" id="check-Certificate" checked> Certificate</label><br>
@@ -404,6 +405,17 @@
                 if (cb && ct) ct.style.display = cb.checked ? 'block' : 'none';
             });
 
+            // ➕ เพิ่มโค้ดชุดนี้เพื่อควบคุมการแสดงผลของรูปภาพโปรไฟล์
+            const checkImg = document.getElementById('check-ProfileImg');
+            // ค้นหารูปโปรไฟล์ทั้งหมดที่อยู่ในสไตล์การ์ดหลัก
+            const profileImgs = document.querySelectorAll('.profile-img');
+             profileImgs.forEach(img => {
+            if (checkImg) {
+            // ถ้าติ๊กเลือกให้แสดงผลตามปกติ (Flex/Static) ถ้าเอาออกให้ซ่อนตัว (none)
+            img.style.setProperty('display', checkImg.checked ? 'block' : 'none', 'important');
+            }
+             });
+
             // 3. กำหนดค่าออปชันสำหรับ Library html2pdf
             const opt = {
                 margin: [15, 15, 15, 15], // ขอบกระดาษ [บน, ซ้าย, ล่าง, ขวา] (มิลลิเมตร)
@@ -432,6 +444,8 @@
                     const ct = document.getElementById(item.content);
                     if (ct) ct.style.display = 'block';
                 });
+                // ➕ คืนค่าให้รูปโปรไฟล์กลับมาแสดงผลบนหน้าเว็บตามปกติ
+                profileImgs.forEach(img => { img.style.display = ''; });
                 toggleDownloadMenu(); // ปิดหน้าต่างเมนูสวิตช์ดาวน์โหลด
             }
         }
