@@ -127,12 +127,15 @@
 /* 1. จัดการตัวกล่องครอบหลักเมื่อเป็นโหมด PDF */
 .pdf-mode {
     background: #ffffff !important;
-    width: 210mm !important;        /* บังคับความกว้างขนาดมาตรฐาน A4 */
+    width: 210mm !important;        
     max-width: 100% !important;
     margin: 0 auto !important;
-    padding: 1mm 1mm !important;  /* เว้นระยะขอบกระดาษ [บน-ล่าง] และ [ซ้าย-ขวา] */
+    padding: 1mm 1mm !important;  
     box-sizing: border-box !important;
     display: block !important;
+    
+    /* เพิ่มบรรทัดนี้ลงไปครับ */
+    position: relative !important; 
 }
 
 /* 2. จัดระเบียบการ์ดเนื้อหาแต่ละส่วนให้เรียงต่อกันเป็นตั้งลงมา */
@@ -179,20 +182,33 @@
     text-indent: 0 !important;        /* ล้างค่าการเยื้องเดิมบนหน้าเว็บ (ถ้ามี) */
 }
 
-/* 6. ปรับขนาดรูปโปรไฟล์ใน PDF ให้กะทัดรัด ไม่ใหญ่แย่งพื้นที่ข้อความ */
+/* 6. ปรับขนาดรูปโปรไฟล์ใน PDF ให้กะทัดรัด และล็อกตำแหน่งขวาบนสุด */
 .pdf-mode .profile-img {
-    width: 100px !important;
-    height: 100px !important;
-    float: right !important;          /* ให้รูปไปลอยอยู่มุมขวาบนของหน้าแรกแทน */
-    margin: 0 0 15px 15px !important;
+    width: 30mm !important;          /* ปรับขนาดตามความเหมาะสม */
+    height: 30mm !important;
+    object-fit: cover !important;
     border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+
+    /* ใส่ชุดคำสั่งล็อกตำแหน่งขวาบนสุดตรงนี้ */
+    position: absolute !important;
+    top: 5mm !important;             /* ห่างจากขอบบนสุดของกระดาษ */
+    right: 5mm !important;           /* ห่างจากขอบขวาสุดของกระดาษ */
+    margin: 0 !important;
+    z-index: 9999 !important;        /* ดันให้อยู่ชั้นบนสุดเสมอ */
 }
 
 /* ปรับตำแหน่งหัวข้อแรกเพื่อให้หลบรูปภาพฝั่งขวา */
+.pdf-mode #Home {
+    width: 75% !important;           /* จำกัดความกว้างเนื้อหาฝั่งซ้ายให้หลบรูปภาพ */
+    max-width: 75% !important;
+}
+
 .pdf-mode #Home h1 {
     text-align: left !important;
-    font-size: 5pt !important;
+    font-size: 12pt !important;      /* ปรับขนาดชื่อให้เด่นขึ้นเล็กน้อย */
     border-bottom: none !important;
+    margin-bottom: 5px !important;
 }
     </style>
 </head>
