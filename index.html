@@ -39,22 +39,22 @@
         }
 
         /* --- สไตล์กล่องเนื้อหา (Card Component) --- */
-.card {
-    scroll-margin-top: 60px; /* เว้นระยะด้านบนเมื่อกดลิงก์สมูทสกรอลล์ ไม่ให้เมนูบัง */
-    background: transparent; 
-    padding: 30px;
+        .card {
+        scroll-margin-top: 60px; /* เว้นระยะด้านบนเมื่อกดลิงก์สมูทสกรอลล์ ไม่ให้เมนูบัง */
+        background: transparent; 
+        padding: 30px;
     
-    /* 🛠️ แก้ไข 2 บรรทัดนี้เพื่อให้คอมกว้างเต็มจอ แต่มือถือยืดหยุ่นได้ครับ */
-    width: 100% !important;       /* บังคับให้ขยายกว้างเต็ม 100% ของหน้าจอในทุกอุปกรณ์ */
-    max-width: 100% !important;   /* ปลดล็อกการบีบหน้าจอ ไม่ให้จำกัดอยู่ที่ 800px อีกต่อไป */
-    box-sizing: border-box;       /* ช่วยคำนวณไม่ให้พื้นที่ padding 30px ดันจนขอบล้นหน้าจอ */
+        /* 🛠️ แก้ไข 2 บรรทัดนี้เพื่อให้คอมกว้างเต็มจอ แต่มือถือยืดหยุ่นได้ครับ */
+        width: 100% !important;       /* บังคับให้ขยายกว้างเต็ม 100% ของหน้าจอในทุกอุปกรณ์ */
+        max-width: 100% !important;   /* ปลดล็อกการบีบหน้าจอ ไม่ให้จำกัดอยู่ที่ 800px อีกต่อไป */
+        box-sizing: border-box;       /* ช่วยคำนวณไม่ให้พื้นที่ padding 30px ดันจนขอบล้นหน้าจอ */
     
-    margin: 5px auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* เอฟเฟกต์เคลื่อนไหวนุ่มนวล */
-}
+        margin: 5px auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* เอฟเฟกต์เคลื่อนไหวนุ่มนวล */
+        }
         .card:hover {
             transform: translateY(-5px); /* ยกกล่องลอยขึ้น 5px เมื่อเอาเมาส์มาชี้ */
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* เพิ่มเงาให้ดูมีมิติ */
@@ -176,7 +176,7 @@
 .pdf-mode h1 {
     font-size: 10pt !important;
     margin-bottom: 5px !important;
-    border-bottom: 2px solid #333333 !important; /* เพิ่มเส้นคั่นใต้หัวข้อใหญ่เพื่อความสวยงามเป็นระเบียบ */
+    border-bottom: 1px solid #333333 !important; /* เพิ่มเส้นคั่นใต้หัวข้อใหญ่เพื่อความสวยงามเป็นระเบียบ */
     padding-bottom: 5px !important;
 }
 
