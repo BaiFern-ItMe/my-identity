@@ -39,17 +39,21 @@
         }
 
         /* --- สไตล์กล่องเนื้อหา (Card Component) --- */
-        .card {
-            scroll-margin-top: 60px; /* เว้นระยะด้านบนเมื่อกดลิงก์สมูทสกรอลล์ ไม่ให้เมนูบัง */
-            background: transparent; 
-            padding: 30px;
-            max-width: auto;
-            margin: 5px auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* เอฟเฟกต์เคลื่อนไหวนุ่มนวล */
-        }
+.card {
+    scroll-margin-top: 60px; /* เว้นระยะด้านบนเมื่อกดลิงก์สมูทสกรอลล์ ไม่ให้เมนูบัง */
+    background: transparent; 
+    padding: 30px;
+    
+    /* 🛠️ แก้ไข 2 บรรทัดนี้แทนของเดิมครับ */
+    width: 90% !important;       /* ถ้าเปิดในมือถือ (จอเล็ก) กล่องจะหดเหลือ 90% พอดีจออัตโนมัติ */
+    max-width: 800px !important; /* ถ้าเปิดในคอม (จอใหญ่) กล่องจะขยายกว้างสุดได้ไม่เกิน 800px */
+    
+    margin: 5px auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* เอฟเฟกต์เคลื่อนไหวนุ่มนวล */
+}
         .card:hover {
             transform: translateY(-5px); /* ยกกล่องลอยขึ้น 5px เมื่อเอาเมาส์มาชี้ */
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* เพิ่มเงาให้ดูมีมิติ */
