@@ -121,51 +121,79 @@
         }
 
         /* ===================================================
-           สไตล์สำหรับแปลงหน้าเว็บเป็นเอกสาร PDF ตัวจริง (pdf-mode)
-           =================================================== */
-        .pdf-mode {
-            background: white !important;
-            width: 210mm !important; /* บังคับขนาดหน้ากระดาษ A4 */
-            margin: 0 auto !important;
-            display: block !important;
-            padding: 20mm !important; /* เพิ่มขอบกระดาษ */
-        }
-        .pdf-mode * {
-            position: static !important; /* ล้างสไตล์การลอยตัวป้องกันข้อความทับกัน */
-            display: block !important;   /* บังคับเรียงต่อกันจากบนลงล่าง */
-            float: none !important;
-            width: auto !important;
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            transform: none !important;  
-            text-align: left !important; 
-            color: black !important; /* บังคับอักษรสีดำทั้งหมดเพื่อให้พิมพ์ง่าย */
-            opacity: 1 !important;
-        }
-        .pdf-mode img {
-            width: 120px !important;
-            height: auto !important;
-            margin: 10px auto !important; 
-            border-radius: 10px !important;
-        }
-        .pdf-mode h1 { 
-            font-size: 22pt !important; 
-            text-align: center !important; 
-            margin-bottom: 20px !important; 
-        }
-        .pdf-mode h2 { 
-            font-size: 16pt !important; 
-            border-bottom: 2px solid #333 !important; 
-            margin-top: 20px !important;
-            padding-bottom: 5px !important;
-        }
-        .pdf-mode p, .pdf-mode li, .pdf-mode span {
-            font-size: 11pt !important;
-            line-height: 1.5 !important;
-            margin-bottom: 8px !important;
-            display: list-item !important; /* เปลี่ยนสไตล์เป็นรายการจุดนำหน้า */
-            margin-left: 20px !important;
-        }
+   สไตล์สำหรับการจัดระเบียบเนื้อหาให้พอดีหน้ากระดาษ A4 อัตโนมัติ
+   =================================================== */
+
+/* 1. จัดการตัวกล่องครอบหลักเมื่อเป็นโหมด PDF */
+.pdf-mode {
+    background: #ffffff !important;
+    width: 210mm !important;        /* บังคับความกว้างขนาดมาตรฐาน A4 */
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 20mm 15mm !important;  /* เว้นระยะขอบกระดาษ [บน-ล่าง] และ [ซ้าย-ขวา] */
+    box-sizing: border-box !important;
+    display: block !important;
+}
+
+/* 2. จัดระเบียบการ์ดเนื้อหาแต่ละส่วนให้เรียงต่อกันเป็นตั้งลงมา */
+.pdf-mode .card {
+    display: block !important;       /* เปลี่ยนจาก flex เป็น block เพื่อให้เรียงต่อกันจากบนลงล่าง */
+    width: 100% !important;
+    max-width: 100% !important;
+    background: transparent !important;
+    box-shadow: none !important;     /* ลบเงาออกทั้งหมดเพื่อให้เหมาะกับหน้าเอกสาร */
+    transform: none !important;
+    padding: 10px 0 !important;      /* ลด Padding เพื่อไม่ให้เปลืองพื้นที่กระดาษ */
+    margin: 0 0 15px 0 !important;
+    page-break-inside: avoid !important; /* ป้องกันไม่ให้การ์ดใบเดียวถูกตัดครึ่งแผ่นคนละหน้า */
+}
+
+/* 3. จัดการให้เนื้อหาภายในยอมตัดคำขึ้นบรรทัดใหม่ ไม่ล้นขอบ */
+.pdf-mode .card-content {
+    display: block !important;
+    width: 100% !important;
+    padding: 0 !important;
+}
+
+/* 4. สั่งให้ตัวอักษรทุกประเภทใน PDF ตัดคำอัตโนมัติเมื่อถึงขอบขวา */
+.pdf-mode h1, .pdf-mode h2, .pdf-mode p, .pdf-mode strong {
+    color: #000000 !important;       /* บังคับตัวอักษรสีดำทั้งหมดเพื่อให้คมชัดเวลาพิมพ์ */
+    text-align: left !important;
+    word-wrap: break-word !important; /* สั่งให้ตัดคำขึ้นบรรทัดใหม่อัตโนมัติเมื่อสุดขอบขวา */
+    white-space: normal !important;   /* ป้องกันไม่ให้ข้อความวิ่งเป็นเส้นยาวเส้นเดียว */
+    margin-top: 0 !important;
+}
+
+/* 5. ปรับขนาดตัวอักษรให้เหมาะสมกับขนาดกระดาษจริง */
+.pdf-mode h1 {
+    font-size: 20pt !important;
+    margin-bottom: 15px !important;
+    border-bottom: 2px solid #333333 !important; /* เพิ่มเส้นคั่นใต้หัวข้อใหญ่เพื่อความสวยงามเป็นระเบียบ */
+    padding-bottom: 5px !important;
+}
+
+.pdf-mode p {
+    font-size: 11pt !important;
+    line-height: 1.5 !important;      /* ระยะห่างบรรทัดที่อ่านง่ายพอดีตา */
+    margin-bottom: 6px !important;
+    text-indent: 0 !important;        /* ล้างค่าการเยื้องเดิมบนหน้าเว็บ (ถ้ามี) */
+}
+
+/* 6. ปรับขนาดรูปโปรไฟล์ใน PDF ให้กะทัดรัด ไม่ใหญ่แย่งพื้นที่ข้อความ */
+.pdf-mode .profile-img {
+    width: 100px !important;
+    height: 100px !important;
+    float: right !important;          /* ให้รูปไปลอยอยู่มุมขวาบนของหน้าแรกแทน */
+    margin: 0 0 15px 15px !important;
+    border: 1px solid #ddd !important;
+}
+
+/* ปรับตำแหน่งหัวข้อแรกเพื่อให้หลบรูปภาพฝั่งขวา */
+.pdf-mode #Home h1 {
+    text-align: left !important;
+    font-size: 24pt !important;
+    border-bottom: none !important;
+}
     </style>
 </head>
 <body>
