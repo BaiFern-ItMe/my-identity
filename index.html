@@ -427,7 +427,7 @@
 
             try {
                 // รอระบบเรนเดอร์สไตล์ใหม่ 0.5 วินาที เพื่อไม่ให้ฟอนต์วิ่งชนกัน
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 1000));
                 // เรียกใช้คลังคำสั่งเพื่อแปลงไฟล์และกดดาวน์โหลดอัตโนมัติ
                 await html2pdf().set(opt).from(element).save();
             } catch (e) {
