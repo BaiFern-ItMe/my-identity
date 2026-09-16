@@ -369,81 +369,89 @@
     </div>
 
     <script>
-        // ฟังก์ชันสำหรับสลับสถานะเปิด-ปิดเมนูเช็กบ็อกซ์ดาวน์โหลด
-        function toggleDownloadMenu() {
-            const menu = document.getElementById('download-options');
-            if (menu) menu.classList.toggle('hidden');
-        }
+    // ฟังก์ชันสำหรับสลับสถานะเปิด-ปิดเมนูเช็กบ็อกซ์ดาวน์โหลด
+    function toggleDownloadMenu() {
+        const menu = document.getElementById('download-options');
+        if (menu) menu.classList.toggle('hidden');
+    }
 
-        // ฟังก์ชันหลักในการจัดเตรียมเอกสารและดาวน์โหลดเป็น PDF
-        async function prepareAndDownload() {
-            const element = document.getElementById('cv-content');
-            if (!element) return;
+    // ฟังก์ชันหลักในการจัดเตรียมเอกสารและดาวน์โหลดเป็น PDF
+    async function prepareAndDownload() {
+        const element = document.getElementById('cv-content');
+        if (!element) return;
 
-            // 1. เพิ่มคลาสสไตล์กระดาษ PDF ให้กับเนื้อหาหลัก
-            element.classList.add('pdf-mode');
+        // 🛠️ 1. ดึงหน้าเว็บกลับขึ้นบนสุดก่อน เพื่อไม่ให้ตำแหน่งการ Scroll บิดเบือนพิกัดการจับภาพ
+        window.scrollTo(0, 0);
 
-            // 2. สร้างอาร์เรย์เก็บคู่ปุ่มเช็กและไอดีส่วนเนื้อหา
-            const sections = [
-                { check: 'check-Home', content: 'content-Home' },
-                { check: 'check-Experience', content: 'content-Experience' },
-                { check: 'check-Certificate', content: 'content-Certificate' },
-                { check: 'check-Skills', content: 'content-Skills' },
-                { check: 'check-Education', content: 'content-Education' },
-                { check: 'check-Contact', content: 'content-Contact' }
-            ];
+        // 2. เพิ่มคลาสสไตล์กระดาษ PDF ให้กับเนื้อหาหลัก
+        element.classList.add('pdf-mode');
 
-            // วนลูปตรวจสอบ หากเช็กบ็อกซ์ถูกติ๊กให้แสดงผล (block) ถ้าไม่ให้ซ่อนไว้ (none)
-            sections.forEach(item => {
-                const cb = document.getElementById(item.check);
-                const ct = document.getElementById(item.content);
-                if (cb && ct) ct.style.display = cb.checked ? 'block' : 'none';
-            });
+        // 3. สร้างอาร์เรย์เก็บคู่ปุ่มเช็กและไอดีส่วนเนื้อหา
+        const sections = [
+            { check: 'check-Home', content: 'content-Home' },
+            { check: 'check-Experience', content: 'content-Experience' },
+            { check: 'check-Certificate', content: 'content-Certificate' },
+            { check: 'check-Skills', content: 'content-Skills' },
+            { check: 'check-Education', content: 'content-Education' },
+            { check: 'check-Contact', content: 'content-Contact' }
+        ];
 
-            // ➕ เพิ่มโค้ดชุดนี้เพื่อควบคุมการแสดงผลของรูปภาพโปรไฟล์
-            const checkImg = document.getElementById('check-ProfileImg');
-            // ค้นหารูปโปรไฟล์ทั้งหมดที่อยู่ในสไตล์การ์ดหลัก
-            const profileImgs = document.querySelectorAll('.profile-img');
-             profileImgs.forEach(img => {
+        // วนลูปตรวจสอบ หากเช็กบ็อกซ์ถูกติ๊กให้แสดงผล (block) ถ้าไม่ให้ซ่อนไว้ (none)
+        sections.forEach(item => {
+            const cb = document.getElementById(item.check);
+            const ct = document.getElementById(item.content);
+            if (cb && ct) ct.style.display = cb.checked ? 'block' : 'none';
+        });
+
+        // 4. ควบคุมการแสดงผลของรูปภาพโปรไฟล์
+        const checkImg = document.getElementById('check-ProfileImg');
+        const profileImgs = document.querySelectorAll('.profile-img');
+        profileImgs.forEach(img => {
             if (checkImg) {
-            // ถ้าติ๊กเลือกให้แสดงผลตามปกติ (Flex/Static) ถ้าเอาออกให้ซ่อนตัว (none)
-            img.style.setProperty('display', checkImg.checked ? 'block' : 'none', 'important');
+                img.style.setProperty('display', checkImg.checked ? 'block' : 'none', 'important');
             }
-             });
+        });
 
-            // 3. กำหนดค่าออปชันสำหรับ Library html2pdf
-            const opt = {
-                margin: [15, 15, 15, 15], // ขอบกระดาษ [บน, ซ้าย, ล่าง, ขวา] (มิลลิเมตร)
-                filename: 'Saranporn_CV.pdf', // ชื่อไฟล์ที่จะได้รับ
-                image: { type: 'jpeg', quality: 1 }, // ตั้งค่ารูปภาพคุณภาพสูงสุด
-                html2canvas: { 
-                    scale: 3, // ขยายภาพ 3 เท่าเพื่อให้ซูมแล้วตัวหนังสือไม่แตก
-                    useCORS: true, // เปิดยอมรับการดึงรูปภาพข้ามเซิร์ฟเวอร์
-                    letterRendering: true, // บังคับให้ประมวลผลฟอนต์ทีละตัวอักษรเพื่อความคมชัด
-                    backgroundColor: '#ffffff' // พื้นหลังกระดาษสีขาว
-                },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // กำหนดไซส์กระดาษแนวตั้ง A4
-            };
+        // 🛠️ 5. ปรับออปชันการเรนเดอร์ให้สมบูรณ์และเสถียรยิ่งขึ้น
+        const opt = {
+            margin: [10, 10, 10, 10], // ขอบกระดาษ [บน, ซ้าย, ล่าง, ขวา] (มิลลิเมตร)
+            filename: 'Saranporn_CV.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 2,               // ปรับลงมาที่ 2 เพื่อให้เสถียรสูง ภาพไม่ใหญ่เกินจนค้าง
+                useCORS: true,          // เปิดดึงรูปข้าม domain
+                letterRendering: true,  // คมชัดทีละตัวอักษร
+                backgroundColor: '#ffffff',
+                scrollX: 0,             // ล็อกพิกัดไม่ให้เรนเดอร์เบี้ยวตามหน้าจอ
+                scrollY: 0,
+                logging: false
+            },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            // 🛠️ ป้องกันตัวหนังสือหรือการ์ดถูกตัดครึ่งแผ่นตอนขึ้นหน้าใหม่
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } 
+        };
 
-            try {
-                // รอระบบเรนเดอร์สไตล์ใหม่ 0.5 วินาที เพื่อไม่ให้ฟอนต์วิ่งชนกัน
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                // เรียกใช้คลังคำสั่งเพื่อแปลงไฟล์และกดดาวน์โหลดอัตโนมัติ
-                await html2pdf().set(opt).from(element).save();
-            } catch (e) {
-                console.error('เกิดข้อผิดพลาดในการสร้าง PDF:', e);
-            } finally {
-                // คืนค่ารูปแบบสไตล์หน้าเว็บเดิมและแสดงส่วนเนื้อหาทั้งหมดกลับมาหลังจากดาวน์โหลดเสร็จ
-                element.classList.remove('pdf-mode');
-                sections.forEach(item => {
-                    const ct = document.getElementById(item.content);
-                    if (ct) ct.style.display = 'block';
-                });
-                // ➕ คืนค่าให้รูปโปรไฟล์กลับมาแสดงผลบนหน้าเว็บตามปกติ
-                profileImgs.forEach(img => { img.style.display = ''; });
-                toggleDownloadMenu(); // ปิดหน้าต่างเมนูสวิตช์ดาวน์โหลด
-            }
+        try {
+            // รอระบบเรนเดอร์สไตล์ใหม่ 1 วินาที ให้รูปภาพและฟอนต์โหลดครบถ้วน
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            // เรียกใช้คลังคำสั่งเพื่อแปลงไฟล์และกดดาวน์โหลดอัตโนมัติ
+            await html2pdf().set(opt).from(element).save();
+        } catch (e) {
+            console.error('เกิดข้อผิดพลาดในการสร้าง PDF:', e);
+            alert('เกิดข้อผิดพลาดในการสร้างไฟล์ PDF กรุณาลองใหม่อีกครั้ง');
+        } finally {
+            // คืนค่ารูปแบบสไตล์หน้าเว็บเดิมและแสดงส่วนเนื้อหาทั้งหมดกลับมาหลังจากดาวน์โหลดเสร็จ
+            element.classList.remove('pdf-mode');
+            sections.forEach(item => {
+                const ct = document.getElementById(item.content);
+                if (ct) ct.style.display = 'block';
+            });
+            
+            // คืนค่าให้รูปโปรไฟล์กลับมาแสดงผลบนหน้าเว็บตามปกติ
+            profileImgs.forEach(img => { img.style.display = ''; });
+            toggleDownloadMenu(); // ปิดหน้าต่างเมนูสวิตช์ดาวน์โหลด
         }
-    </script>
+    }
+</script>
 </body>
 </html>
